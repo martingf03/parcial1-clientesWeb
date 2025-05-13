@@ -1,12 +1,6 @@
 <script>
 
-import supabase from '../../services/supabase';
-
-const canalChat = supabase.channel("globalChat", {
-    config: {
-        broadcast: { self: true },
-    }
-});
+import { saveChatMessage, suscribeToChatMessages } from '../../services/chat-service';
 
 export default {
     name: "Chat",
@@ -25,39 +19,23 @@ export default {
 
     methods: {
         async SendMessage() {
-            const res = await canalChat.send({
-                type: "broadcast",
-                event: "newMessage",
-                payload: {
-                    id: this.messages.length + 1,
-                    email: this.newMessage.email,
-                    content: this.newMessage.content,
-                    date: new Date().toLocaleString('es-AR', {
-                        dateStyle: 'short',
-                        timeStyle: 'short'
-                    }),
-                },
-            });
-            console.log("Mensaje enviado: ", res);
+            await saveChatMessage({
+                id: this.messages.length + 1,
+                email: this.newMessage.email,
+                content: this.newMessage.content,
+                date: new Date().toLocaleString('es-AR', {
+                    dateStyle: 'short',
+                    timeStyle: 'short'
+                }),
+            },
+            );
             
             this.newMessage.content = "";
         }
     },
 
     async mounted() {
-
-        canalChat.on(
-            "broadcast",
-            {
-                event: "newMessage",
-            },
-            data => {
-                console.log("datos recibidos en tiempo real: ", data);
-                this.messages.push(data.payload);
-            }
-        );
-
-        canalChat.subscribe();
+        suscribeToChatMessages(newMessageReceived => this.messages.push(newMessageReceived));
     }
 };
 </script>
