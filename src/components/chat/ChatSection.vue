@@ -1,6 +1,7 @@
 <script>
 
-import { saveChatMessage, suscribeToChatMessages } from '../../services/chat-service';
+import { nextTick } from 'vue';
+import { loadChatMessagesFromDB, saveChatMessage, suscribeToChatMessages } from '../../services/chat-service';
 
 export default {
     name: "Chat",
@@ -36,6 +37,14 @@ export default {
 
     async mounted() {
         suscribeToChatMessages(newMessageReceived => this.messages.push(newMessageReceived));
+
+        try {
+            this.messages = await loadChatMessagesFromDB();
+            await nextTick();
+            this.$refs.chatContainer.scrollTop = this.$refs.chatContainer.scrollHeight;
+        } catch (error) {
+            
+        }
     }
 };
 </script>
@@ -45,7 +54,10 @@ export default {
 
         <section class="w-9/12">
             <h2 class="sr-only">Lista de mensajes</h2>
-            <div class="min-h-[400px] p-4 border rounded">
+            <div
+            ref="chatContainer" 
+            class="h-100 overflow-y-auto p-4 border rounded"
+            >
                 <div v-for="m in messages" :key="m.id" class="mb-4">
                     <div class="text-sm"><span class="font-bold text-emerald-600">{{ m.email }} dijo:</span></div>
                     <div>{{ m.content }}</div>
