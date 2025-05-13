@@ -7,7 +7,7 @@ const canalChat = supabase.channel("globalChat", {
 });
 
 export async function saveChatMessage(data) {
-    const res = await canalChat.send({
+    await canalChat.send({
         type: "broadcast",
         event: "newMessage",
         payload: {
