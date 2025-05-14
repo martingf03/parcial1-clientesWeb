@@ -36,7 +36,11 @@ export default {
     },
 
     async mounted() {
-        suscribeToChatMessages(newMessageReceived => this.messages.push(newMessageReceived));
+        suscribeToChatMessages(async newMessageReceived => {
+            this.messages.push(newMessageReceived);
+            await nextTick();
+            this.$refs.chatContainer.scrollTop = this.$refs.chatContainer.scrollHeight;
+        });
 
         try {
             this.messages = await loadChatMessagesFromDB();
