@@ -2,7 +2,7 @@
 import { login } from '../../services/auth';
 
 export default {
-    name: "Login",
+    name: "LoginSection",
     data() {
         return {
             user: {
@@ -15,7 +15,7 @@ export default {
     methods: {
         async handleSubmit() {
             try {
-                await login(this.user.email, this.user.password)
+                const user = await login(this.user.email, this.user.password);
             } catch (error) {
                 // MANEJAR
             }
