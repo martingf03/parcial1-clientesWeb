@@ -1,8 +1,8 @@
 <script>
-import { register } from '../../services/auth';
+import { login } from '../../services/auth';
 
 export default {
-    name: "Register",
+    name: "Login",
     data() {
         return {
             user: {
@@ -15,7 +15,7 @@ export default {
     methods: {
         async handleSubmit() {
             try {
-                await register(this.user.email, this.user.password)
+                await login(this.user.email, this.user.password)
             } catch (error) {
                 // MANEJAR
             }
@@ -41,7 +41,7 @@ export default {
             </div>
             <button type="submit"
                 class="transition py-2 px-4 rounded bg-emerald-700 hover:bg-emerald-500 focus:bg-emerald-500 text-white w-full">
-                Crear cuenta
+                Iniciar sesión
             </button>
         </form>
     </div>
