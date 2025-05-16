@@ -5,7 +5,6 @@ import Login from "./pages/Login.vue";
 import Register from "./pages/Register.vue";
 import AppFooter from "./components/AppFooter.vue";
 import AppNavbar from "./components/AppNavbar.vue";
-import { subscribeToUserState } from "./services/auth";
 
 export default {
   name: "App",

@@ -7,6 +7,18 @@ let user = {
 
 let observers = [];
 
+loadInitialUserState();
+
+async function loadInitialUserState() {
+   const { data } = await supabase.auth.getUser();
+
+   if (!data.user) return;
+
+   updateUser({
+      id: data.user.id,
+      email: data.user.email,
+   });
+}
 
 export async function register(email, password) {
    const { data, error } = await supabase.auth.signUp({
@@ -19,13 +31,12 @@ export async function register(email, password) {
       throw error;
    }
 
-   user = {
-      ...user,
+   updateUser({
       id: data.user.id,
       email: data.user.email,
-   }
+   });
 
-   notifyAll();
+   console.info("Se registró un nuevo usuario con e-mail", data.user.email);
 
 }
 
@@ -40,28 +51,28 @@ export async function login(email, password) {
       throw error;
    }
 
-   user = {
-      ...user,
+   updateUser({
       id: data.user.id,
       email: data.user.email,
-   }
+   });
 
-   notifyAll();
+   console.info("Sesión iniciada por", user.email)
 
-   console.log(user);
    return data.user;
 }
 
 export async function logout() {
    supabase.auth.signOut();
-
-   user = {
-      ...user,
+   let logueado = user.email;
+   updateUser({
       id: null,
       email: null,
-   }
+   });
 
-   notifyAll();
+
+   console.info("Se cerró la sesión de", logueado);
+
+   logueado = null;
 }
 
 
@@ -72,9 +83,17 @@ export function subscribeToUserState(callback) {
 }
 
 function notify(callback) {
-   callback({...user});
+   callback({ ...user });
 }
 
 function notifyAll() {
    observers.forEach(callback => notify(callback));
+}
+
+function updateUser(data) {
+   user = {
+      ...user,
+      ...data,
+   }
+   notifyAll();
 }

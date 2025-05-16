@@ -15,10 +15,12 @@ export default {
     methods: {
         async handleSubmit() {
             try {
-                const user = await login(this.user.email, this.user.password);
+                await login(this.user.email, this.user.password);
             } catch (error) {
                 // MANEJAR
             }
+
+            this.$router.push("/");
         }
     }
 
