@@ -8,6 +8,9 @@ export default {
       user: {
         id: null,
         email: null,
+        display_name: null,
+        bio: null,
+        career: null,
       }
 
     }
@@ -15,8 +18,8 @@ export default {
 
   methods: {
     handleLogout() {
-     logout()
-    this.$router.push("/iniciar-sesion");
+      logout()
+      this.$router.push("/iniciar-sesion");
     }
   },
 
@@ -29,7 +32,8 @@ export default {
 
 <template>
   <nav class="bg-emerald-400 border-b-4 border-b-emerald-500">
-    <div class="flex justify-between items-center p-4 font-[Lexend] text-lg">
+    <div class="flex justify-between items-center font-[Lexend] text-lg h-16 px-6">
+
       <ul class="flex items-center gap-8">
         <li class="hover:text-white transition duration-200 ease-in-out">
           <router-link to="/">Home</router-link>
@@ -41,9 +45,14 @@ export default {
         </template>
       </ul>
 
-      <ul class="flex items-center gap-6">
+      <ul class="flex items-center gap-8">
         <template v-if="user.id !== null">
-          <li>{{ user.email }}</li>
+          <li>
+            <router-link to="/mi-perfil"
+              class="rounded-lg bg-emerald-700 text-white hover:bg-emerald-600 py-2 px-4 text-center transition duration-200 ease-in-out"><font-awesome-icon :icon="['fas', 'circle-user']" />
+              {{ user.display_name }}
+            </router-link>
+          </li>
           <li class="hover:text-white transition duration-200 ease-in-out cursor-pointer" @click="handleLogout">
             Cerrar sesión
           </li>

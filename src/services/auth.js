@@ -1,8 +1,13 @@
 import supabase from "./supabase";
+import { createUserProfile, getUserProfileById } from "./user-profiles";
 
 let user = {
    id: null,
-   email: null
+   email: null,
+   display_name: null,
+   bio: null,
+   career: null,
+   surname: null,
 }
 
 let observers = [];
@@ -13,6 +18,14 @@ async function loadInitialUserState() {
    const { data } = await supabase.auth.getUser();
 
    if (!data.user) return;
+
+   getUserProfileById(data.user.id)
+   .then(profileData => updateUser({
+      display_name: profileData.display_name,
+      bio: profileData.bio,
+      career: profileData.career,
+      surname: profileData.surname,
+   }))
 
    updateUser({
       id: data.user.id,
@@ -29,6 +42,15 @@ export async function register(email, password) {
    if (error) {
       console.error("[auth.js register] Error al crear la cuenta: ", error);
       throw error;
+   }
+
+   try {
+      await createUserProfile({
+         id: data.user.id,
+         email
+      })
+   } catch (errorProfile) {
+      throw errorProfile;
    }
 
    updateUser({

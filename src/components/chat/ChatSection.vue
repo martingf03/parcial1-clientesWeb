@@ -2,6 +2,7 @@
 
 import { nextTick } from 'vue';
 import { loadChatMessagesFromDB, saveChatMessage, suscribeToChatMessages } from '../../services/chat-service';
+import {subscribeToUserState} from '../../services/auth'
 
 export default {
     name: "Chat",
@@ -11,9 +12,17 @@ export default {
             messages: [],
 
             newMessage: {
-                email: "",
+                name: "",
+                surname: "",
                 content: "",
                 date: "",
+            }, 
+
+            user: {
+                id: null,
+                email: null,
+                display_name: null,
+                surname: null,
             }
         }
     },
@@ -22,12 +31,10 @@ export default {
         async SendMessage() {
             await saveChatMessage({
                 id: this.messages.length + 1,
-                email: this.newMessage.email,
+                name: this.user.display_name,
+                surname: this.user.surname,
                 content: this.newMessage.content,
-                date: new Date().toLocaleString('es-AR', {
-                    dateStyle: 'short',
-                    timeStyle: 'short'
-                }),
+                date: this.newMessage.date,
             },
             );
             
@@ -47,8 +54,10 @@ export default {
             await nextTick();
             this.$refs.chatContainer.scrollTop = this.$refs.chatContainer.scrollHeight;
         } catch (error) {
-            
-        }
+            //TODO
+        };
+
+        subscribeToUserState(newUserState => this.user = newUserState);
     }
 };
 </script>
@@ -63,7 +72,7 @@ export default {
             class="h-100 overflow-y-auto p-4 border rounded"
             >
                 <div v-for="m in messages" :key="m.id" class="mb-4">
-                    <div class="text-sm"><span class="font-bold text-emerald-600">{{ m.email }} dijo:</span></div>
+                    <div class="text-sm"><span class="font-bold text-emerald-600">{{ m.name }} {{ m.surname }} dijo:</span></div>
                     <div>{{ m.content }}</div>
                     <div class="text-xs text-gray-400">{{ m.date }}</div>
                 </div>
@@ -71,15 +80,12 @@ export default {
         </section>
 
         <section class="w-3/12">
-            <h2 class="mb-4 text-lg font-bold">Enviar un mensaje</h2>
+            <h2 class="sr-only">Enviar un mensaje</h2>
             <form action="#" @submit.prevent="SendMessage">
-                <div class="mb-4">
-                    <label for="user" class="block mb-2">Nombre de usuario</label>
-                    <input type="text" id="user" class="w-full border rounded py-2 px-4" v-model="newMessage.email">
-                </div>
+
                 <div class="mb-4">
                     <label for="text" class="block mb-2">Mensaje</label>
-                    <textarea type="text" id="text" class="w-full border rounded py-2 px-4"
+                    <textarea type="text" id="text" class="w-full border rounded py-2 px-4 h-24"
                         v-model="newMessage.content">
         </textarea>
                 </div>

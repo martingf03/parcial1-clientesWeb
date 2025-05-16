@@ -3,13 +3,15 @@ import Home from "../pages/Home.vue";
 import Chat from "../pages/Chat.vue";
 import Login from "../pages/Login.vue";
 import Register from "../pages/Register.vue";
+import MyProfile from "../pages/MyProfile.vue";
 import { subscribeToUserState } from "../services/auth";
 
 const routes = [
     { path: "/", component: Home },
     { path: "/chat", component: Chat, meta: { requiresAuth: true } },
-    { path: "/iniciar-sesion", component: Login },
-    { path: "/registro", component: Register },
+    { path: "/iniciar-sesion", component: Login, },
+    { path: "/registro", component: Register, },
+    { path: "/mi-perfil", component: MyProfile, meta: { requiresAuth: true } },
 ]
 
 const router = createRouter({

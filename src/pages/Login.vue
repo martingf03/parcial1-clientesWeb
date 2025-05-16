@@ -8,6 +8,8 @@ export default {
 </script>
 
 <template>
-    <MainH1>Iniciar sesión</MainH1>
-    <LoginSection />
+    <div class="flex flex-col items-center mt-4">
+        <MainH1>Iniciar sesión</MainH1>
+        <LoginSection />
+    </div>
 </template>

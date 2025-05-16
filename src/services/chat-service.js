@@ -17,7 +17,8 @@ export async function saveChatMessage(data) {
     const { error } = await supabase
         .from('global_chat')
         .insert({
-            email: data.email,
+            name: data.name,
+            surname: data.surname,
             content: data.content
         });
         if(error) {
@@ -37,6 +38,7 @@ export async function suscribeToChatMessages(callback) {
             }
         }
     );
+
     chatChannel.on(
         "postgres_changes", 
         {
