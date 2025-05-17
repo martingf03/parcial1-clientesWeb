@@ -19,18 +19,29 @@ async function loadInitialUserState() {
 
    if (!data.user) return;
 
-   getUserProfileById(data.user.id)
-   .then(profileData => updateUser({
-      display_name: profileData.display_name,
-      bio: profileData.bio,
-      career: profileData.career,
-      surname: profileData.surname,
-   }))
+   loadExtendedUserProfile();
 
    updateUser({
       id: data.user.id,
       email: data.user.email,
    });
+}
+
+async function loadExtendedUserProfile() {
+   try {
+      const profileData = await getUserProfileById(user.id);
+
+      updateUser({
+         display_name: profileData.display_name,
+         bio: profileData.bio,
+         career: profileData.career,
+         surname: profileData.surname,
+      });
+   } catch (error) {
+      console.error("[auth.js loadExtendedUserProfile] Error al traer los datos del usuario de la BD: ", error);
+      throw error;
+   }
+
 }
 
 export async function register(email, password) {
@@ -80,6 +91,7 @@ export async function login(email, password) {
 
    console.info("Sesión iniciada por", user.email)
 
+   loadExtendedUserProfile();
    return data.user;
 }
 

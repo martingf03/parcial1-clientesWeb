@@ -12,6 +12,7 @@ export default {
                 bio: null,
                 display_name: null,
                 career: null,
+                surname: null
             }
         }
     },
@@ -25,22 +26,26 @@ export default {
 
 <template>
     <section class="p-3">
-        <div class="flex flex-col mb-4">
+        <div class="flex flex-col mb-10">
             <h2 class="font-bold text-2xl mb-2">Biografía</h2>
-            <p class="italic">{{ user.bio }}</p>
+            <p class="italic font-light">{{ user.bio || "Acá va mi biografía" }}</p>
         </div>
-        <div class="flex gap-64 items-center">
+        <div class="flex gap-40 items-center">
             <div>
                 <h2 class="font-bold text-2xl mb-2">Email</h2>
                 <p>{{ user.email }}</p>
             </div>
             <div>
-                <h2 class="font-bold text-2xl mb-2">Nombre de usuario</h2>
-                <p>{{ user.display_name }}</p>
+                <h2 class="font-bold text-2xl mb-2">Nombre</h2>
+                <p>{{ user.display_name || "Acá va mi nombre" }}</p>
+            </div>
+            <div>
+                <h2 class="font-bold text-2xl mb-2">Apellido</h2>
+                <p>{{ user.surname || "Acá va mi apellido" }}</p>
             </div>
             <div>
                 <h2 class="font-bold text-2xl mb-2">Carrera</h2>
-                <p>{{ user.career }}</p>
+                <p>{{ user.career || "Acá va mi carrera" }}</p>
             </div>
         </div>
     </section>

@@ -8,6 +8,8 @@ export default {
 </script>
 
 <template>
-    <MainH1 class="flex flex-col items-center mt-4">Registrarse</MainH1>
-    <RegisterSection />
+    <div class="flex flex-col items-center mt-4">
+        <MainH1>Registrarse</MainH1>
+        <RegisterSection />
+    </div>
 </template>
