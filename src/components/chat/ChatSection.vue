@@ -1,7 +1,7 @@
 <script>
 
 import { nextTick } from 'vue';
-import { loadChatMessagesFromDB, saveChatMessage, suscribeToChatMessages } from '../../services/chat-service';
+import { loadChatMessagesFromDB, saveChatMessage, suscribeToChatMessages,formatDate } from '../../services/chat-service';
 import {subscribeToUserState} from '../../services/auth'
 
 let unsubscribe = () => {};
@@ -32,16 +32,17 @@ export default {
     methods: {
         async SendMessage() {
             await saveChatMessage({
-                id: this.messages.length + 1,
                 name: this.user.display_name,
                 surname: this.user.surname,
                 content: this.newMessage.content,
-                date: this.newMessage.date,
+                user_id: this.user.id,
             },
             );
             
             this.newMessage.content = "";
-        }
+        },
+        
+        formatDate,
     },
 
     async mounted() {
@@ -56,7 +57,7 @@ export default {
             await nextTick();
             this.$refs.chatContainer.scrollTop = this.$refs.chatContainer.scrollHeight;
         } catch (error) {
-            //TODO
+            console.error("[loadChatMessagesFromDB ChatSection] Error al traer los mensajes de la base de datos: ", error);
         };
 
         unsubscribe = subscribeToUserState(newUserState => this.user = newUserState);
@@ -81,7 +82,7 @@ export default {
                 <div v-for="m in messages" :key="m.id" class="mb-4">
                     <div class="text-sm"><span class="font-bold text-emerald-600">{{ m.name }} {{ m.surname }} dijo:</span></div>
                     <div>{{ m.content }}</div>
-                    <div class="text-xs text-gray-400">{{ m.date }}</div>
+                    <div class="text-xs text-gray-400">{{ formatDate(m.date) }}</div>
                 </div>
             </div>
         </section>

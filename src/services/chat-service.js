@@ -19,10 +19,11 @@ export async function saveChatMessage(data) {
         .insert({
             name: data.name,
             surname: data.surname,
-            content: data.content
+            content: data.content,
+            user_id: data.user_id,
         });
         if(error) {
-            console.error("[chat-service.js saveChatMessage] Error al insertar el registro: ", error);
+            console.error("[chat-service.js saveChatMessage] Error al insertar el mensaje a la base de datos: ", error);
             throw error;
         }
 };
@@ -52,3 +53,18 @@ export async function suscribeToChatMessages(callback) {
     );
     chatChannel.subscribe();
 };
+
+export function formatDate(dateString) {
+    const date = new Date(dateString);
+
+    const h = date.toLocaleTimeString("es-AR", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+    });
+
+    const d = date.toLocaleDateString("es-AR");
+
+    return `a las ${h}, el ${d}`;
+}
+

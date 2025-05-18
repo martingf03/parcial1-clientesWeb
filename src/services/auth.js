@@ -124,11 +124,11 @@ OBESERVER
 
 export function subscribeToUserState(callback) {
    observers.push(callback);
-   console.log("[Observer auth] Se agregó un nuevo Observer. El stack actualizado es: ", observers);
+   // console.log("[Observer auth] Se agregó un nuevo Observer. El stack actualizado es: ", observers);
    notify(callback);
        return () => {
         observers = observers.filter(obs => obs !== callback);
-        console.log("[Observer auth] Se removió un observer. El stack actualizado es: ", observers);
+      //   console.log("[Observer auth] Se removió un observer. El stack actualizado es: ", observers);
     };
 }
 
