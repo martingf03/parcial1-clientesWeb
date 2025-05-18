@@ -19,17 +19,17 @@ async function loadInitialUserState() {
 
    if (!data.user) return;
 
-   loadExtendedUserProfile();
-
    updateUser({
       id: data.user.id,
       email: data.user.email,
    });
+
+   await loadExtendedUserProfile(data.user.id);
 }
 
-async function loadExtendedUserProfile() {
+async function loadExtendedUserProfile(userId) {
    try {
-      const profileData = await getUserProfileById(user.id);
+      const profileData = await getUserProfileById(userId);
 
       updateUser({
          display_name: profileData.display_name,
@@ -91,7 +91,7 @@ export async function login(email, password) {
 
    console.info("Sesión iniciada por", user.email)
 
-   loadExtendedUserProfile();
+   await loadExtendedUserProfile(data.user.id);
    return data.user;
 }
 
