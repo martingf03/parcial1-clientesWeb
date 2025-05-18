@@ -1,33 +1,115 @@
 <script>
+import { subscribeToUserState, updateAuthUserProfile } from "../../services/auth";
 
-import { subscribeToUserState } from '../../services/auth';
+let unsubscribe = () => {};
 
 export default {
-    name: "MyProfileEditSection",
-    data() {
-        return {
-            user: {
-                id: null,
-                email: null,
-                bio: null,
-                display_name: null,
-                career: null,
-                surname: null
-            }
+  name: "MyProfileEditSection",
+  data() {
+    return {
+      user: {
+        id: null,
+        email: null,
+        bio: null,
+        display_name: null,
+        career: null,
+        surname: null,
+      },
+      profile: {
+        display_name: null,
+        bio: null,
+        career: null,
+        surname: null,
+      },
+      updating: false,
+    };
+  },
+
+  methods: {
+    async handleSubmit() {
+        try {
+            this.updating = true;
+            await updateAuthUserProfile({
+                ...this.profile
+            });
+            console.info("Se actualizó el perfil del usuario:", this.profile.display_name)
+            this.updating = false;
+        } catch (error) {
+            console.error("No se pudo editar el perfil del usuario: ", error);
+            throw error;
         }
     },
+  },
 
-    mounted() {
-        subscribeToUserState(newUserState => this.user = newUserState);
-    }
+  mounted() {
+    unsubscribe = subscribeToUserState((newUserState) => {
+        this.user = newUserState;
+        this.profile = {
+            bio: this.user.bio,
+            display_name: this.user.display_name,
+            career: this.user.career,
+            surname: this.user.surname,
+        }
+    });
+  },
 
-}
+  unmounted() {
+    unsubscribe();
+  }
+};
 </script>
 
 <template>
-    <section class="p-3">
-        <form action="#">
-            
-        </form>
-    </section>
+  <section class="p-3">
+    <form action="#" @submit.prevent="handleSubmit">
+      <div class="mb-4">
+        <label for="bio" class="block mb-2">Biografía</label>
+        <textarea
+          type="bio"
+          id="bio"
+          class="w-full border rounded py-2 px-4 h-24"
+          v-model="profile.bio"
+        >
+        </textarea>
+      </div>
+      <div class="flex gap-8">
+          <div class="mb-4">
+            <label for="display_name" class="block mb-2">Nombre</label>
+            <input
+              type="display_name"
+              id="display_name"
+              class="w-full border rounded p-2"
+              v-model="profile.display_name"
+            >
+            </input>
+          </div>
+          <div class="mb-4">
+            <label for="surname" class="block mb-2">Apellido</label>
+            <input
+              type="surname"
+              id="surname"
+              class="w-full border rounded p-2"
+              v-model="profile.surname"
+            >
+            </input>
+          </div>
+          <div class="mb-4">
+            <label for="career" class="block mb-2">Carrera</label>
+            <input
+              type="career"
+              id="career"
+              class="w-full border rounded p-2"
+              v-model="profile.career"
+            >
+            </input>
+          </div>
+      </div>
+      <button
+        type="submit"
+        class="transition py-2 px-4 rounded bg-emerald-700 hover:bg-emerald-500 focus:bg-emerald-500 text-white mt-4"
+      >
+        Guardar cambios
+      </button>
+    </form>
+  </section>
 </template>

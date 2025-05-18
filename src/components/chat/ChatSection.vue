@@ -4,6 +4,8 @@ import { nextTick } from 'vue';
 import { loadChatMessagesFromDB, saveChatMessage, suscribeToChatMessages } from '../../services/chat-service';
 import {subscribeToUserState} from '../../services/auth'
 
+let unsubscribe = () => {};
+
 export default {
     name: "Chat",
 
@@ -57,8 +59,13 @@ export default {
             //TODO
         };
 
-        subscribeToUserState(newUserState => this.user = newUserState);
+        unsubscribe = subscribeToUserState(newUserState => this.user = newUserState);
+    },
+
+    async unmounted() {
+        unsubscribe();
     }
+
 };
 </script>
 

@@ -2,6 +2,8 @@
 
 import { subscribeToUserState } from '../../services/auth';
 
+let unsubscribe = () => {};
+
 export default {
     name: "MyProfileSection",
     data() {
@@ -18,7 +20,11 @@ export default {
     },
 
     mounted() {
-        subscribeToUserState(newUserState => this.user = newUserState);
+        unsubscribe = subscribeToUserState(newUserState => this.user = newUserState);
+    },
+
+    unmounted() {
+        unsubscribe();
     }
 
 }

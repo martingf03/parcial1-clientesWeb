@@ -1,5 +1,5 @@
 import supabase from "./supabase";
-import { createUserProfile, getUserProfileById } from "./user-profiles";
+import { createUserProfile, getUserProfileById, updateUserProfile } from "./user-profiles";
 
 let user = {
    id: null,
@@ -109,11 +109,27 @@ export async function logout() {
    logueado = null;
 }
 
+export async function updateAuthUserProfile(data) {
+   try {
+      await updateUserProfile(user.id, data);
+      updateUser(data);
+   } catch (error) {
+      console.error("[auth.js updateAuthUserProfile] Error al actualizar el perfil del usuario autenticado:", error )
+   }
+}
+
+/*
+OBESERVER
+*/
 
 export function subscribeToUserState(callback) {
    observers.push(callback);
-
+   console.log("[Observer auth] Se agregó un nuevo Observer. El stack actualizado es: ", observers);
    notify(callback);
+       return () => {
+        observers = observers.filter(obs => obs !== callback);
+        console.log("[Observer auth] Se removió un observer. El stack actualizado es: ", observers);
+    };
 }
 
 function notify(callback) {
