@@ -11,6 +11,7 @@ const routes = [
     { path: "/editar-mi-perfil", component: () => import("../pages/MyProfileEdit.vue"), meta: { requiresAuth: true } },
     { path: "/usuario/:id", component: () => import("../pages/UserProfile.vue"), meta: { requiresAuth: true } },
     { path: "/mis-publicaciones", component: () => import("../pages/MyPosts.vue"), meta: { requiresAuth: true } },
+    { path: "/mis-publicaciones/nuevo-post", component: () => import("../pages/NewPost.vue"), meta: { requiresAuth: true } },
 ];
 
 const router = createRouter({

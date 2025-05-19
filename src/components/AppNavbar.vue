@@ -40,7 +40,10 @@ export default {
         </li>
         <template v-if="user.id !== null">
           <li class="hover:text-white transition duration-200 ease-in-out">
-            <router-link to="/chat">Chat Global</router-link>
+            <router-link to="/chat">Chat global</router-link>
+          </li>
+          <li class="hover:text-white transition duration-200 ease-in-out">
+            <router-link to="/mis-publicaciones">Mis publicaciones</router-link>
           </li>
         </template>
       </ul>

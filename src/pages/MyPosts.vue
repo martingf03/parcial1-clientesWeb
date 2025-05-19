@@ -9,14 +9,14 @@ export default {
 </script>
 
 <template>
-    <div class="flex flex-col justify-start mb-4">
-        <MainH1>Mi perfil</MainH1>
+    <div class="flex flex-col justify-center items-center my-4">
+        <MainH1>Mis publicaciones</MainH1>
         <router-link 
-        to="/nuevo-post" 
-        class="rounded-lg bg-emerald-700 text-white hover:bg-emerald-600 py-2 px-4 w-40 text-center transition duration-200 ease-in-out"
+        to="/mis-publicaciones/nuevo-post" 
+        class="rounded-lg bg-emerald-700 text-white hover:bg-emerald-600 py-2 px-4 text-center transition duration-200 ease-in-out w-fit my-4"
         >
             Crear nueva publicación
         </router-link>
     </div>
-    <MyProfileSection />
+    <MyPostsSection />
 </template>
