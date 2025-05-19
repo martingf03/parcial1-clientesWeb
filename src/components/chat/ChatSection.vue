@@ -3,15 +3,18 @@
 import { nextTick } from 'vue';
 import { loadChatMessagesFromDB, saveChatMessage, suscribeToChatMessages,formatDate } from '../../services/chat-service';
 import {subscribeToUserState} from '../../services/auth'
+import { RouterLink } from 'vue-router';
+import ChatLoader from '../loaders/ChatLoader.vue';
 
 let unsubscribe = () => {};
 
 export default {
     name: "Chat",
-
+    components: { ChatLoader },
     data() {
         return {
             messages: [],
+            loadingMessages: true,
 
             newMessage: {
                 name: "",
@@ -54,6 +57,7 @@ export default {
 
         try {
             this.messages = await loadChatMessagesFromDB();
+            this.loadingMessages = false;
             await nextTick();
             this.$refs.chatContainer.scrollTop = this.$refs.chatContainer.scrollHeight;
         } catch (error) {
@@ -79,12 +83,16 @@ export default {
             ref="chatContainer" 
             class="h-100 overflow-y-auto p-4 border rounded"
             >
-                <div v-for="m in messages" :key="m.id" class="mb-4">
-                    <div class="text-sm"><span class="font-bold text-emerald-600">{{ m.name }} {{ m.surname }} dijo:</span></div>
+                <div v-if="!loadingMessages" v-for="m in messages" :key="m.id" class="mb-4">
+                    <RouterLink :to="`/usuario/${m.user_id}`" class="text-sm text-gray-400"><span class="font-bold text-emerald-600 cursor-pointer hover:text-emerald-500 transition">{{ m.name }} {{ m.surname }}</span> dijo:</RouterLink>
                     <div>{{ m.content }}</div>
                     <div class="text-xs text-gray-400">{{ formatDate(m.date) }}</div>
                 </div>
+                <div v-else class="m-4">
+                    <ChatLoader />
+                </div>
             </div>
+
         </section>
 
         <section class="w-3/12">
