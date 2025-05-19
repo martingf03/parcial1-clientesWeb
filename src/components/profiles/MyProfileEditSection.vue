@@ -1,10 +1,16 @@
 <script>
 import { subscribeToUserState, updateAuthUserProfile } from "../../services/auth";
+import MainButton from "../MainButton.vue";
+import ButtonLoader from "../loaders/ButtonLoader.vue";
+import SuccessNote from "../notifications/SuccessNote.vue";
+import ErrorNote from "../notifications/ErrorNote.vue";
+
 
 let unsubscribe = () => {};
 
 export default {
   name: "MyProfileEditSection",
+  components: { MainButton, ButtonLoader, SuccessNote, ErrorNote }, 
   data() {
     return {
       user: {
@@ -22,21 +28,38 @@ export default {
         surname: null,
       },
       updating: false,
+
+      notification: {
+        type: "success",
+        message: null,
+      }
     };
   },
 
   methods: {
     async handleSubmit() {
+      this.notification.message = null;
+
         try {
             this.updating = true;
             await updateAuthUserProfile({
                 ...this.profile
             });
-            console.info("Se actualizó el perfil del usuario:", this.profile.display_name)
+
+            console.info("Se actualizó el perfil del usuario:", this.profile.display_name);
+            this.notification = {
+              type: "success",
+              message: "El perfil se actualizó con éxito.",
+            }
+
             this.updating = false;
+
         } catch (error) {
-            console.error("No se pudo editar el perfil del usuario: ", error);
-            throw error;
+            this.notification = {
+              type: "error",
+              message: "No se pudo actualizar el perfil.",
+            }
+            console.error("No se pudo actualizar el perfil debido al siguiente error: ", error);
         }
     },
   },
@@ -60,6 +83,17 @@ export default {
 </script>
 
 <template>
+  <template v-if="notification.message != null">
+    <div v-if="notification.type === 'success'">
+       <SuccessNote>{{ notification.message }}</SuccessNote>
+    </div>
+    <div v-else>
+        <ErrorNote>{{ notification.message }}</ErrorNote>
+    </div>
+  </template>
+  <template v-else>
+
+  </template>
   <section class="p-3">
     <form action="#" @submit.prevent="handleSubmit">
       <div class="mb-4">
@@ -104,12 +138,12 @@ export default {
             </input>
           </div>
       </div>
-      <button
-        type="submit"
-        class="transition py-2 px-4 rounded bg-emerald-700 hover:bg-emerald-500 focus:bg-emerald-500 text-white mt-4"
-      >
-        Guardar cambios
-      </button>
+        <div v-if="!updating">
+          <MainButton type="submit" class="mt-4">Guardar cambios</MainButton>
+        </div>
+        <div v-else>
+          <button class="mt-4 py-2 px-4 rounded bg-gray-200 text-gray-400">Cargando <ButtonLoader /></button>
+        </div>
     </form>
   </section>
 </template>

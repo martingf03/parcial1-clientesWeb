@@ -80,7 +80,7 @@ export async function login(email, password) {
    })
 
    if (error) {
-      console.error("[auth.js login] Error al crear la cuenta: ", error);
+      console.error("[auth.js login] Error al iniciar sesión: ", error);
       throw error;
    }
 

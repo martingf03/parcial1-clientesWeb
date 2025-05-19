@@ -34,7 +34,7 @@ export default {
     <section class="p-3">
         <div class="flex flex-col mb-10">
             <h2 class="font-bold text-2xl mb-2">Biografía</h2>
-            <p class="italic font-light">{{ user.bio || "Acá va mi biografía" }}</p>
+            <p class="italic font-light">{{ user.bio || "Aún no se escribió la biografía..." }}</p>
         </div>
         <div class="flex gap-40 items-center">
             <div>
@@ -43,15 +43,15 @@ export default {
             </div>
             <div>
                 <h2 class="font-bold text-2xl mb-2">Nombre</h2>
-                <p>{{ user.display_name || "Acá va mi nombre" }}</p>
+                <p>{{ user.display_name || "Sin especificar" }}</p>
             </div>
             <div>
                 <h2 class="font-bold text-2xl mb-2">Apellido</h2>
-                <p>{{ user.surname || "Acá va mi apellido" }}</p>
+                <p>{{ user.surname || "Sin especificar" }}</p>
             </div>
             <div>
                 <h2 class="font-bold text-2xl mb-2">Carrera</h2>
-                <p>{{ user.career || "Acá va mi carrera" }}</p>
+                <p>{{ user.career || "Sin especificar" }}</p>
             </div>
         </div>
     </section>
