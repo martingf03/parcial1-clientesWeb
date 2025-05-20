@@ -20,6 +20,7 @@ export async function loadCommentByPost(post_id) {
     .select(
       `
       id,
+      user_id,
       content,
       created_at,
       user_profiles (

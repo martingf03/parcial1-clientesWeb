@@ -5,6 +5,7 @@ import {
   addComment,
 } from "../../services/comments-service";
 import { subscribeToUserState } from "../../services/auth";
+import { formatDate } from "../../services/chat-service";
 
 let unsubscribe = () => {};
 
@@ -39,12 +40,6 @@ export default {
       }
     });
 
-    try {
-      this.comments = await loadCommentByPost(this.post_id);
-    } catch (error) {
-      //TODO
-    }
-
     unsubscribe = subscribeToUserState(
       (newUserState) => (this.user = newUserState)
     );
@@ -55,12 +50,15 @@ export default {
   },
 
   methods: {
-    // async toggleComments() {
-    //     const data = await loadCommentByPost(this.post_id);
-    //     this.comments = data;
-
-    //   this.showComments = !this.showComments;
-    // },
+    async toggleComments() {
+      try {
+        const data = await loadCommentByPost(this.post_id);
+        this.comments = data;
+      } catch (error) {
+        //  TODO
+      }
+      this.showComments = !this.showComments;
+    },
 
     async submitComment() {
       await addComment({
@@ -71,21 +69,22 @@ export default {
 
       this.newComment.content = "";
     },
+    formatDate,
   },
 };
 </script>
 
 <template>
   <div>
-    <!-- <p
+    <p
       class="text-emerald-700 text-sm underline hover:text-emerald-500 focus:text-emerald-500 cursor-pointer mt-4 me-2 text-end"
       @click="toggleComments"
     >
       {{ showComments ? "Ocultar comentarios" : "Mostrar comentarios" }}
-    </p> -->
+    </p>
 
-    <div class="mt-3 border-t pt-2 space-y-2">
-      <div class="mt-2">
+    <div v-if="showComments" class="mt-3 border-t pt-2 space-y-2">
+      <div class="mt-4">
         <label for="text" class="sr-only">Agregar comentario</label>
         <div class="flex items-start space-x-2">
           <textarea
@@ -105,12 +104,19 @@ export default {
       <div
         v-for="comment in comments"
         :key="comment.id"
-        class="text-sm text-gray-700"
+        class="text-sm text-gray-700 border-b border-b-gray-200 p-4"
       >
-        <span class="font-bold text-emerald-600">
-          {{ comment.user_profiles.display_name }} </span
-        >:
-        {{ comment.content }}
+        <p
+          @click="$router.push(`/usuario/${comment.user_id}`)"
+          class="font-bold text-emerald-600 cursor-pointer hover:text-emerald-500 transition"
+        >
+          {{ comment.user_profiles.display_name }}
+          {{ comment.user_profiles.surname }}
+        </p>
+        <p class="mb-1">{{ comment.content }}</p>
+        <p class="text-xs text-gray-500">
+          Publicado {{ formatDate(comment.created_at) }}
+        </p>
       </div>
 
       <div v-if="comments.length === 0" class="text-gray-400 text-sm my-4">

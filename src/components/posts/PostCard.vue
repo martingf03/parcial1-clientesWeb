@@ -21,9 +21,9 @@ export default {
 </script>
 
 <template>
-  <div class="max-w-md rounded overflow-hidden shadow-lg bg-white border">
+  <div class="w-xl rounded overflow-hidden shadow-lg bg-white border">
     <div class="px-6 py-4">
-      <p class="text-gray-800 text-base whitespace-pre-wrap mb-4">
+      <p class="text-gray-900 text-base mb-4">
         {{ content }}
       </p>
       <div class="text-sm text-gray-500 mb-1">
