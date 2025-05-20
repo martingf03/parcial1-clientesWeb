@@ -1,18 +1,24 @@
 <script>
-import { nextTick } from "vue";
 import { subscribeToUserState } from "../../services/auth";
 import MainButton from "../MainButton.vue";
+import {
+  loadPostsFromDB,
+  suscribeToPostsChannel,
+} from "../../services/posts-service";
+import PostCard from "./PostCard.vue";
+import PostLoader from "../loaders/PostLoader.vue";
+
 
 let unsubscribe = () => {};
 
 export default {
   name: "GeneralPostsSection",
-  components: { MainButton },
+  components: { MainButton, PostCard, PostLoader },
   data() {
     return {
       posts: [],
-      loadingPosts: null,
-      
+      loadingPosts: true,
+
       user: {
         id: null,
         email: null,
@@ -23,22 +29,16 @@ export default {
   },
 
   async mounted() {
-    suscribeToChatMessages(async (newMessageReceived) => {
-      this.messages.push(newMessageReceived);
-      await nextTick();
-      this.$refs.chatContainer.scrollTop =
-        this.$refs.chatContainer.scrollHeight;
+    suscribeToPostsChannel(async (newPostReceived) => {
+      this.posts.push(newPostReceived);
     });
 
     try {
-      this.messages = await loadChatMessagesFromDB();
-      this.loadingMessages = false;
-      await nextTick();
-      this.$refs.chatContainer.scrollTop =
-        this.$refs.chatContainer.scrollHeight;
+      this.posts = await loadPostsFromDB();
+      this.loadingPosts = false;
     } catch (error) {
       console.error(
-        "[loadChatMessagesFromDB ChatSection] Error al traer los mensajes de la base de datos: ",
+        "[loadPostsFromDB GeneralPostsSection] Error al traer las publicaciones  de la base de datos: ",
         error
       );
     }
@@ -55,8 +55,28 @@ export default {
 </script>
 
 <template>
-  <section class="flex gap-4">
-     <h2 class="sr-only">Lista general de publicaciones</h2>
-
+  <section v-if="user.id" class="flex gap-4">
+    <h2 class="sr-only">Lista general de publicaciones</h2>
+    <div
+      v-if="!loadingPosts"
+      ref="postsContainer"
+      class="my-8 mx-auto flex flex-col justify-center items-center gap-6"
+    >
+      <PostCard
+        v-for="post in posts"
+        :key="post.id"
+        :user_id="post.user_id"
+        :display_name="post.user_profiles.display_name"
+        :surname="post.user_profiles.surname"
+        :content="post.content"
+        :date="post.created_at"
+      />
+    </div>
+    <div v-else class="flex justify-center items-center mx-auto mt-8">
+      <PostLoader />
+    </div>
+  </section>
+  <section v-else class="mx-auto text-xl font-bold mt-16">
+    <p>¡Conectate para ver quienes están publicando!</p>
   </section>
 </template>
