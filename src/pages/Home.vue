@@ -9,8 +9,9 @@ import GeneralPostsSection from '../components/posts/GeneralPostsSection.vue';
 
 <template>
     <section class="flex flex-col justify-center items-center my-4 border-b-4 border-emerald-500 pb-8">
-        <MainH1>Bienvenidos a Echo Social</MainH1>
-        <p class="text-center mt-4">Acá podés postear lo que te gusta, ver qué comparten los demás y comentar en tiempo real. Conectá, expresate y hacé que tu voz se escuche. ¡Este lugar es tuyo!</p>
+        <img src="/logo.svg" alt="Logo de Link Campus" class="block w-32 mb-4">
+        <MainH1>Bienvenidos a Link Campus</MainH1>
+        <p class="text-center">Acá podés postear lo que te gusta, ver qué comparten los demás y comentar en tiempo real. Conectá, expresate y hacé que tu voz se escuche.</p>
     </section>
     <section class="flex flex-col justify-center">
         <GeneralPostsSection />

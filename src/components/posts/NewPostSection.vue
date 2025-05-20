@@ -1,16 +1,17 @@
 <script>
-
 import MainButton from "../MainButton.vue";
 import ButtonLoader from "../loaders/ButtonLoader.vue";
 import { subscribeToUserState } from "../../services/auth";
 import { savePost } from "../../services/posts-service";
+import SuccessNote from "../notifications/SuccessNote.vue";
+import ErrorNote from "../notifications/ErrorNote.vue";
 
 let unsubscribe = () => {};
 
 export default {
   name: "NewPostSection",
 
-  components: { MainButton, ButtonLoader },
+  components: { MainButton, ButtonLoader, SuccessNote, ErrorNote },
 
   data() {
     return {
@@ -21,42 +22,60 @@ export default {
       },
       newPost: {
         content: "",
-      }
+      },
+      notification: {
+        type: "success",
+        message: null,
+      },
     };
   },
 
   methods: {
     async publishPost() {
-        await savePost({
-            user_id: this.user.id,
-            content: this.newPost.content
-        }),
-        // console.info("Se realizó una nueva publicación.");
-        // console.info("El id guardado es: ", this.user.id);
-        // console.info("El contenido del texto del post es: ", this.newPost.content);
+      let newPostContent = this.newPost.content;
 
-        this.newPost.content = "";
-        this.$router.push("/mis-publicaciones");
-    }
+      if (newPostContent) {
+        await savePost({
+          user_id: this.user.id,
+          content: newPostContent,
+        }),
+          (this.newPost.content = "");
+        this.notification = {
+          type: "success",
+          message: "La publicación fue creada con éxito.",
+        };
+      } else {
+        this.notification = {
+          type: "error",
+          message: "La publicación no puede estar vacía.",
+        };
+      }
+    },
   },
 
   async mounted() {
     unsubscribe = subscribeToUserState(
-        (newUserState) => (this.user = newUserState),
+      (newUserState) => (this.user = newUserState)
     );
   },
 
   async unmounted() {
     unsubscribe();
-  }
+  },
 };
-
 </script>
 
 <template>
-  
   <section class="p-3">
     <form action="#" @submit.prevent="publishPost">
+      <template v-if="notification.message != null" class="transition">
+        <div v-if="notification.type === 'success'">
+          <SuccessNote>{{ notification.message }}</SuccessNote>
+        </div>
+        <div v-else>
+          <ErrorNote>{{ notification.message }}</ErrorNote>
+        </div>
+      </template>
       <div class="mb-4">
         <label for="content" class="sr-only">Nueva publicación</label>
         <textarea

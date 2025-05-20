@@ -91,9 +91,7 @@ export default {
         <ErrorNote>{{ notification.message }}</ErrorNote>
     </div>
   </template>
-  <template v-else>
 
-  </template>
   <section class="p-3">
     <form action="#" @submit.prevent="handleSubmit">
       <div class="mb-4">
