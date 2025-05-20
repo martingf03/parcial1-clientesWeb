@@ -67,6 +67,7 @@ export default {
         :surname="user.surname"
         :content="post.content"
         :date="post.created_at"
+        :post_id="post.id"
       />
     </div>
     <div v-else

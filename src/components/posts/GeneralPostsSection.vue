@@ -70,6 +70,7 @@ export default {
         :surname="post.user_profiles.surname"
         :content="post.content"
         :date="post.created_at"
+        :post_id="post.id"
       />
     </div>
     <div v-else class="flex justify-center items-center mx-auto mt-8">

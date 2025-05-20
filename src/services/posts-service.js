@@ -7,7 +7,7 @@ export async function savePost(data) {
   });
   if (error) {
     console.error(
-      "[posts-service.js savePost] Error al insertar la publicació en la base de datos: ",
+      "[posts-service.js savePost] Error al insertar la publicación en la base de datos: ",
       error
     );
     throw error;
