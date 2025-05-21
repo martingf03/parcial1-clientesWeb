@@ -18,6 +18,11 @@ let observers = [];
 
 loadInitialUserState();
 
+/**
+ * Carga el estado inicial del usuario autenticado si existe sesión activa.
+ * 
+ * @async
+ */
 async function loadInitialUserState() {
   const { data } = await supabase.auth.getUser();
 
@@ -31,6 +36,14 @@ async function loadInitialUserState() {
   await loadExtendedUserProfile(data.user.id);
 }
 
+/**
+ * Carga el perfil extendido del usuario desde la base de datos
+ * y actualiza el estado del usuario.
+ * 
+ * @async
+ * @param {string} userId - ID del usuario.
+ * @throws {Error} Si ocurre un error al obtener los datos.
+ */
 async function loadExtendedUserProfile(userId) {
   try {
     const profileData = await getUserProfileById(userId);
@@ -50,6 +63,15 @@ async function loadExtendedUserProfile(userId) {
   }
 }
 
+/**
+ * Registra un nuevo usuario con email y contraseña.
+ * Si el registro es exitoso, lo guarda en la BBDD.
+ * 
+ * @async
+ * @param {string} email - Correo electrónico del nuevo usuario.
+ * @param {string} password - Contraseña del nuevo usuario.
+ * @throws {Error} Si ocurre un error en el registro o al crear el perfil.
+ */
 export async function register(email, password) {
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -78,6 +100,15 @@ export async function register(email, password) {
   console.info("Se registró un nuevo usuario con e-mail", data.user.email);
 }
 
+/**
+ * Inicia sesión con email y contraseña.
+ * Si es exitoso, actualiza el estado del usuario.
+ * 
+ * @param {string} email - Correo electrónico del usuario.
+ * @param {string} password - Contraseña del usuario.
+ * @returns {Object} Usuario autenticado.
+ * @throws {Error} Si el login falla.
+ */
 export async function login(email, password) {
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
@@ -100,6 +131,12 @@ export async function login(email, password) {
   return data.user;
 }
 
+/**
+ * Cierra la sesión del usuario actualmente autenticado.
+ * Limpia los datos del usuario del estado global.
+ * 
+ * @async
+ */
 export async function logout() {
   supabase.auth.signOut();
   let logueado = user.email;
@@ -113,6 +150,12 @@ export async function logout() {
   logueado = null;
 }
 
+/**
+ * Actualiza el perfil del usuario autenticado en la base de datos.
+ * 
+ * @async
+ * @param {{ display_name?: string, bio?: string, career?: string, surname?: string }} data - Datos del perfil a actualizar.
+ */
 export async function updateAuthUserProfile(data) {
   try {
     await updateUserProfile(user.id, data);
@@ -125,6 +168,14 @@ export async function updateAuthUserProfile(data) {
   }
 }
 
+/**
+ * Actualiza el email del usuario autenticado.
+ * 
+ * @async
+ * @param {{ email: string }} newEmail - Nuevo correo electrónico.
+ * @returns {Object} Datos actualizados del usuario.
+ * @throws {Error} Si falla la operación.
+ */
 export async function updateAuthEmail(newEmail) {
   const { data, error } = await supabase.auth.updateUser(newEmail);
 
@@ -136,6 +187,14 @@ export async function updateAuthEmail(newEmail) {
   return data;
 }
 
+/**
+ * Actualiza la contraseña del usuario autenticado.
+ * 
+ * @async
+ * @param {string} newPassword - Nueva contraseña.
+ * @returns {Object} Datos actualizados del usuario.
+ * @throws {Error} Si falla la operación.
+ */
 export async function updateAuthPassword(newPassword) {
  const { data, error } = await supabase.auth.updateUser({
   password: newPassword
@@ -154,6 +213,13 @@ export async function updateAuthPassword(newPassword) {
 OBESERVER
 */
 
+/**
+ * Suscribe una función "observer" que se ejecutará cada vez que cambien los datos del usuario.
+ * Devuelve una función para cancelar la suscripción.
+ * 
+ * @param {({ id: string|null, email: string|null }) => void} callback - Función que recibe el nuevo estado del usuario.
+ * @returns {() => void} Función para desuscribirse.
+ */
 export function subscribeToUserState(callback) {
   observers.push(callback);
   notify(callback);
@@ -162,14 +228,27 @@ export function subscribeToUserState(callback) {
   };
 }
 
+/**
+ * Ejecuta un observer específico pasándole el estado actual del usuario.
+ * 
+ * @param {({ id: string|null, email: string|null }) => void} callback 
+ */
 function notify(callback) {
   callback({ ...user });
 }
 
+/**
+ * Ejecuta todos los observers registrados para notificar un cambio de estado.
+ */
 function notifyAll() {
   observers.forEach((callback) => notify(callback));
 }
 
+/**
+ * Actualiza los datos del usuario en el estado local y notifica a los observers.
+ * 
+ * @param {{ id?: string|null, email?: string|null, display_name?: string|null, bio?: string|null, career?: string|null, surname?: string|null }} data 
+ */
 function updateUser(data) {
   user = {
     ...user,

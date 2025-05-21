@@ -1,5 +1,12 @@
 import supabase from "./supabase";
 
+/**
+ * Guarda una nueva publicación en la base de datos.
+ *
+ * @async
+ * @param {{ user_id: string, content: string }} postData - Datos de la publicación.
+ * @throws {Error} Si ocurre un error al insertar la publicación.
+ */
 export async function savePost(data) {
   const { error } = await supabase.from("posts").insert({
     user_id: data.user_id,
@@ -14,6 +21,12 @@ export async function savePost(data) {
   }
 }
 
+/**
+ * Se suscribe en tiempo real a nuevas publicaciones insertadas en la tabla "posts".
+ * Ejecuta el callback recibido con los datos de la nueva publicación.
+ *
+ * @param {(newPost: Object) => void} callback - Función que se ejecuta al recibir una nueva publicación.
+ */
 export async function suscribeToPostsChannel(callback) {
   const postsChannel = supabase.channel("posts", {
     config: {
@@ -37,6 +50,14 @@ export async function suscribeToPostsChannel(callback) {
   postsChannel.subscribe();
 }
 
+/**
+ * Carga todas las publicaciones de la base de datos.
+ * Incluye información del usuario asociado a cada post.
+ *
+ * @async
+ * @returns {Promise<Array>} Lista de publicaciones con datos de usuario.
+ * @throws {Error} Si ocurre un error al obtener las publicaciones.
+ */
 export async function loadPostsFromDB() {
   const { data, error } = await supabase
     .from("posts")
@@ -65,6 +86,14 @@ export async function loadPostsFromDB() {
   return data;
 }
 
+/**
+ * Carga todas las publicaciones de un usuario específico.
+ *
+ * @async
+ * @param {string} user_id - ID del usuario.
+ * @returns {Promise<Array>} Lista de publicaciones del usuario.
+ * @throws {Error} Si ocurre un error al obtener las publicaciones.
+ */
 export async function loadPostsByUser(user_id) {
   const { data, error } = await supabase
     .from("posts")

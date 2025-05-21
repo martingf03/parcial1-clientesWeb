@@ -21,9 +21,11 @@ export default {
       try {
         this.loading = true;
         await register(this.user.email, this.user.password);
-        this.loading = false;
+        this.loading = false; 
+        this.$router.push("/iniciar-sesion");
       } catch (error) {
-        // MANEJAR
+        this.loading = false;
+        console.error(error)
       }
     },
   },

@@ -1,5 +1,12 @@
 import supabase from "./supabase";
 
+/**
+ * Inserta un nuevo comentario en la base de datos asociado a un post.
+ * 
+ * @async
+ * @param {{ post_id: string, user_id: string, content: string }} - Datos del comentario.
+ * @throws {Error} Si ocurre un error al insertar el comentario.
+ */
 export async function addComment({ post_id, user_id, content }) {
   const { error } = await supabase
     .from("comments")
@@ -14,6 +21,15 @@ export async function addComment({ post_id, user_id, content }) {
   }
 }
 
+/**
+ * Carga todos los comentarios de un post en orden cronológico ascendente.
+ * También incluye los datos del perfil del usuario que hizo cada comentario.
+ * 
+ * @async
+ * @param {string} post_id - ID del post del cual se quieren cargar los comentarios.
+ * @returns {Promise<Array<Object>>} Lista de comentarios con información de usuario.
+ * @throws {Error} Si ocurre un error al obtener los comentarios.
+ */
 export async function loadCommentByPost(post_id) {
   const { data, error } = await supabase
     .from("comments")
@@ -42,6 +58,14 @@ export async function loadCommentByPost(post_id) {
   return data;
 }
 
+/**
+ * Suscribe una función callback que se ejecuta cada vez que se inserta un nuevo comentario
+ * en la tabla "comments". Filtra por ID del post.
+ * 
+ * @async
+ * @param {string} post_id - ID del post al que pertenecen los comentarios.
+ * @param {(comment: Object) => void} callback - Función que se ejecuta al recibir un nuevo comentario.
+ */
 export async function suscribeToCommentsChannel(post_id, callback) {
   const commentsChannel = supabase
   .channel(`comments:${post_id}`, 
@@ -68,6 +92,13 @@ export async function suscribeToCommentsChannel(post_id, callback) {
   commentsChannel.subscribe();
 }
 
+/**
+ * Agrega la información de perfil del usuario (nombre y apellido) a un comentario.
+ * 
+ * @async
+ * @param {{ user_id: string }} comment - Objeto de comentario con "user_id".
+ * @returns {Promise<Object|null>} Comentario enriquecido con datos de usuario o null si falla.
+ */
 async function addUserDataToComment(comment) {
   const { data, error } = await supabase
     .from("user_profiles")

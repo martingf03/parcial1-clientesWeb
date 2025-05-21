@@ -53,7 +53,7 @@ export default {
           <li>
             <router-link to="/mi-perfil"
               class="rounded-lg bg-emerald-700 text-white hover:bg-emerald-600 py-2 px-4 text-center transition duration-200 ease-in-out"><font-awesome-icon :icon="['fas', 'circle-user']" />
-              {{ user.display_name }}
+              {{ user.display_name ? user.display_name : user.email }}
             </router-link>
           </li>
           <li class="hover:text-white transition duration-200 ease-in-out cursor-pointer" @click="handleLogout">

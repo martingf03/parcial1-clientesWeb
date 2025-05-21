@@ -77,7 +77,7 @@ export default {
       <PostLoader />
     </div>
   </section>
-  <section v-else class="mx-auto text-xl font-bold mt-16">
+  <section v-else class="mx-auto text-xl font-bold my-16">
     <p>¡Conectate para ver quienes están publicando!</p>
   </section>
 </template>

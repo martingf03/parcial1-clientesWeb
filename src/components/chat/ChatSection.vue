@@ -122,6 +122,7 @@ export default {
             type="text"
             id="text"
             class="w-full border rounded py-2 px-4 h-24"
+            placeholder="Escribí tu mensaje acá"
             v-model="newMessage.content"
           >
           </textarea>

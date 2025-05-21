@@ -8,7 +8,7 @@ import { loadPostsByUser } from "../../services/posts-service";
 export default {
   name: "UserProfileSection",
   components: { ProfileLoader, PostCard, PostLoader },
-  emits: ['user-loaded'],
+  emits: ["user-loaded"],
 
   data() {
     return {
@@ -52,9 +52,9 @@ export default {
 
 <template>
   <section class="p-16 rounded shadow" v-if="!loading">
-    <div class="flex flex-col mb-10">
+    <div class="flex flex-col mb-10 p-8 shadow rounded bg-emerald-50">
       <h2 class="font-bold text-2xl mb-2">Biografía</h2>
-      <p class="italic font-light">
+      <p class="italic font-light text-emerald-800 ms-8">
         {{ user.bio || "El usuario no ha publicado aún su biografía." }}
       </p>
     </div>
@@ -85,7 +85,10 @@ export default {
   </div>
 
   <section class="flex flex-col justify-center items-center mt-8">
-    <p class="ftext-center mb-2 mt-8"><span class="font-bold">{{ user.display_name }}</span> realizó las siguientes publicaciones:</p>
+    <p class="ftext-center mb-2 mt-8">
+      <span class="font-bold">{{ user.display_name }}</span> realizó las
+      siguientes publicaciones:
+    </p>
     <div
       v-if="!loadingPosts"
       ref="postsContainer"

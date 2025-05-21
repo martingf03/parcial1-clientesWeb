@@ -32,9 +32,9 @@ export default {
 
 <template>
     <section class="p-3">
-        <div class="flex flex-col mb-10">
+        <div class="flex flex-col mb-10 p-8 shadow rounded bg-emerald-50">
             <h2 class="font-bold text-2xl mb-2">Biografía</h2>
-            <p class="italic font-light">{{ user.bio || "Aún no se escribió la biografía..." }}</p>
+            <p class="italic font-light text-emerald-800 ms-8">{{ user.bio || "Aún no se escribió la biografía..." }}</p>
         </div>
         <div class="flex gap-40 items-center">
             <div>
