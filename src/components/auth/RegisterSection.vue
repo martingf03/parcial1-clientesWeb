@@ -2,10 +2,11 @@
 import { register } from "../../services/auth";
 import ButtonLoader from "../loaders/ButtonLoader.vue";
 import MainButton from "../MainButton.vue";
+import ErrorNote from "../notifications/ErrorNote.vue";
 
 export default {
   name: "Register",
-  components: { MainButton, ButtonLoader },
+  components: { MainButton, ButtonLoader, ErrorNote },
   data() {
     return {
       user: {
@@ -13,6 +14,10 @@ export default {
         password: "",
       },
       loading: false,
+
+      notification: {
+        message: null,
+      },
     };
   },
 
@@ -21,11 +26,27 @@ export default {
       try {
         this.loading = true;
         await register(this.user.email, this.user.password);
-        this.loading = false; 
+        this.loading = false;
         this.$router.push("/iniciar-sesion");
       } catch (error) {
         this.loading = false;
-        console.error(error)
+        console.error(error);
+
+        const errorMsg = error.message.toLowerCase();
+
+        if (errorMsg.includes("anonymous sign-ins")) {
+          this.notification.message = "Los campos no pueden estar vacíos.";
+        } else if (
+          errorMsg.includes("password should be at least 6 characters")
+        ) {
+          this.notification.message =
+            "La contraseña debe tener al menos 6 caracteres.";
+        } else if (errorMsg.includes("user already registered")) {
+          this.notification.message = "Este usuario ya está registrado.";
+        } else {
+          this.notification.message =
+            "Ocurrió un error al registrar la cuenta.";
+        }
       }
     },
   },
@@ -56,12 +77,19 @@ export default {
           v-model="user.password"
         />
       </div>
-        <div v-if="!loading">
-          <MainButton type="submit" class="w-full">Crear cuenta</MainButton>
-        </div>
-        <div v-else>
-          <button class="py-2 px-4 rounded bg-gray-200 text-gray-400 text-center w-full">Registrando <ButtonLoader /></button>
-        </div>
+      <template v-if="notification.message">
+        <ErrorNote class="mx-auto">{{ notification.message }}</ErrorNote>
+      </template>
+      <div v-if="!loading">
+        <MainButton type="submit" class="w-full">Crear cuenta</MainButton>
+      </div>
+      <div v-else>
+        <button
+          class="py-2 px-4 rounded bg-gray-200 text-gray-400 text-center w-full"
+        >
+          Registrando <ButtonLoader />
+        </button>
+      </div>
     </form>
   </div>
 </template>
