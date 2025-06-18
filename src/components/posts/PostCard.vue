@@ -13,6 +13,8 @@ export default {
     date: String,
     content: String,
     post_id: String,
+    post_user_id: String,
+    auth_user_id: String,
   },
   methods: {
     formatDate,
@@ -37,7 +39,21 @@ export default {
         {{ formatDate(date) }}
       </div>
 
-      <Comments :post_id="post_id" />
+      <div class="flex items-center justify-end mt-2">
+        <div v-if="auth_user_id === post_user_id">
+          <span
+            class="text-emerald-700 text-sm underline hover:text-emerald-500 focus:text-emerald-500 cursor-pointer me-2"
+          >
+            Editar publicación
+          </span>
+          <span
+            class="text-emerald-700 text-sm underline hover:text-emerald-500 focus:text-emerald-500 cursor-pointer me-2"
+          >
+            Eliminar publicación
+          </span>
+        </div>
+        <Comments :post_id="post_id" />
+      </div>
     </div>
   </div>
 </template>

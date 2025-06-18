@@ -25,6 +25,7 @@ export default {
         post_id: "",
         content: "",
       },
+      commentError: "",
       user: {
         id: "",
       },
@@ -55,19 +56,31 @@ export default {
         const data = await loadCommentByPost(this.post_id);
         this.comments = data;
       } catch (error) {
-        //  TODO
+        console.error("Error al cargar comentarios:", error);
       }
       this.showComments = !this.showComments;
     },
 
     async submitComment() {
-      await addComment({
-        post_id: this.newComment.post_id,
-        user_id: this.user.id,
-        content: this.newComment.content,
-      });
+      this.commentError = null;
 
-      this.newComment.content = "";
+      if (!this.newComment.content.trim()) {
+        this.commentError = "El comentario no puede estar vacío.";
+        return;
+      }
+
+      try {
+        await addComment({
+          post_id: this.newComment.post_id,
+          user_id: this.user.id,
+          content: this.newComment.content,
+        });
+
+        this.newComment.content = "";
+      } catch (error) {
+        console.error("Error al enviar comentario:", error);
+        this.commentError = "Ocurrió un error al publicar el comentario.";
+      }
     },
     formatDate,
   },
@@ -76,52 +89,54 @@ export default {
 
 <template>
   <div>
-    <p
-      class="text-emerald-700 text-sm underline hover:text-emerald-500 focus:text-emerald-500 cursor-pointer mt-4 me-2 text-end"
+    <span
+      class="text-emerald-700 text-sm underline hover:text-emerald-500 focus:text-emerald-500 cursor-pointer"
       @click="toggleComments"
     >
       {{ showComments ? "Ocultar comentarios" : "Mostrar comentarios" }}
-    </p>
-
-    <div v-if="showComments" class="mt-3 border-t pt-2 space-y-2">
-      <div class="mt-4">
-        <label for="text" class="sr-only">Agregar comentario</label>
-        <div class="flex items-start space-x-2">
-          <textarea
-            id="text"
-            class="w-full border rounded py-2 px-3 h-12"
-            v-model="newComment.content"
-            placeholder="Escribe tu comentario..."
-          ></textarea>
-          <button
-            class="transition py-2 px-4 rounded bg-emerald-700 hover:bg-emerald-500 focus:bg-emerald-500 text-white cursor-pointer h-10"
-            @click="submitComment"
-          >
-            Enviar
-          </button>
-        </div>
-      </div>
-      <div
-        v-for="comment in comments"
-        :key="comment.id"
-        class="text-sm text-gray-700 border-b border-b-gray-200 p-4"
-      >
-        <p
-          @click="$router.push(`/usuario/${comment.user_id}`)"
-          class="font-bold text-emerald-600 cursor-pointer hover:text-emerald-500 transition"
+    </span>
+  </div>
+  <div v-if="showComments" class="mt-3 border-t pt-2 space-y-2">
+    <form @submit.prevent="submitComment" class="mt-4">
+      <label for="text" class="sr-only">Agregar comentario</label>
+      <div class="flex items-start space-x-2">
+        <textarea
+          id="text"
+          class="w-full border rounded py-2 px-3 h-12"
+          v-model="newComment.content"
+          placeholder="Escribe tu comentario..."
+        ></textarea>
+        <button
+          type="submit"
+          class="transition py-2 px-4 rounded bg-emerald-700 hover:bg-emerald-500 focus:bg-emerald-500 text-white cursor-pointer h-10"
         >
-          {{ comment.user_profiles.display_name }}
-          {{ comment.user_profiles.surname }}
-        </p>
-        <p class="mb-1">{{ comment.content }}</p>
-        <p class="text-xs text-gray-500">
-          Publicado {{ formatDate(comment.created_at) }}
-        </p>
+          Enviar
+        </button>
       </div>
+      <p v-if="commentError" class="text-red-500 text-sm mt-1">
+        {{ commentError }}
+      </p>
+    </form>
+    <div
+      v-for="comment in comments"
+      :key="comment.id"
+      class="text-sm text-gray-700 border-b border-b-gray-200 p-4"
+    >
+      <p
+        @click="$router.push(`/usuario/${comment.user_id}`)"
+        class="font-bold text-emerald-600 cursor-pointer hover:text-emerald-500 transition"
+      >
+        {{ comment.user_profiles.display_name }}
+        {{ comment.user_profiles.surname }}
+      </p>
+      <p class="mb-1">{{ comment.content }}</p>
+      <p class="text-xs text-gray-500">
+        Publicado {{ formatDate(comment.created_at) }}
+      </p>
+    </div>
 
-      <div v-if="comments.length === 0" class="text-gray-400 text-sm my-4">
-        Aún no hay comentarios.
-      </div>
+    <div v-if="comments.length === 0" class="text-gray-400 text-sm my-4">
+      Aún no hay comentarios.
     </div>
   </div>
 </template>
