@@ -2,10 +2,12 @@
 import { formatDate } from "../../services/chat-service";
 import Comments from "../posts/Comments.vue";
 import MainButton from "../MainButton.vue";
+import SecondaryButton from "../SecondaryButton.vue";
+import { editPost, deletePost } from "../../services/posts-service";
 
 export default {
   name: "PostCard",
-  components: { MainButton, Comments },
+  components: { MainButton, SecondaryButton, Comments },
   props: {
     user_id: String,
     display_name: String,
@@ -16,8 +18,36 @@ export default {
     post_user_id: String,
     auth_user_id: String,
   },
+  data() {
+    return {
+      isEditing: false,
+      editedContent: "",
+      showDeleteModal: false,
+    };
+  },
+
   methods: {
     formatDate,
+    startEdit() {
+      this.editedContent = this.content;
+      this.isEditing = true;
+    },
+    async saveEdit() {
+      try {
+        await editPost(this.post_id, this.editedContent);
+        this.isEditing = false;
+      } catch (error) {
+        console.error("Error al editar la publicación.", error);
+      }
+    },
+    async confirmDelete() {
+      try {
+        await deletePost(this.post_id);
+      } catch (error) {
+        console.error("[PostCard.vue] Error al eliminar publicación:", error);
+      }
+      this.showDeleteModal = false;
+    },
   },
 };
 </script>
@@ -25,7 +55,17 @@ export default {
 <template>
   <div class="w-xl rounded overflow-hidden shadow-lg bg-white border">
     <div class="px-6 py-4">
-      <p class="text-gray-900 text-base mb-4">
+      <div v-if="isEditing">
+        <textarea
+          v-model="editedContent"
+          class="w-full p-2 border rounded mb-2 h-32"
+        ></textarea>
+        <div class="flex justify-end gap-2 mb-4">
+          <SecondaryButton @click="isEditing = false">Cancelar</SecondaryButton>
+          <MainButton @click="saveEdit">Editar</MainButton>
+        </div>
+      </div>
+      <p v-else class="text-gray-900 text-base mb-4">
         {{ content }}
       </p>
       <div class="text-sm text-gray-500 mb-1">
@@ -39,20 +79,33 @@ export default {
         {{ formatDate(date) }}
       </div>
 
-      <div class="flex items-center justify-end mt-2">
-        <div v-if="auth_user_id === post_user_id">
-          <span
-            class="text-emerald-700 text-sm underline hover:text-emerald-500 focus:text-emerald-500 cursor-pointer me-2"
-          >
-            Editar publicación
-          </span>
-          <span
-            class="text-emerald-700 text-sm underline hover:text-emerald-500 focus:text-emerald-500 cursor-pointer me-2"
-          >
-            Eliminar publicación
-          </span>
-        </div>
+      <div
+        v-if="auth_user_id === post_user_id"
+        class="flex justify-end gap-2 my-2"
+      >
+        <MainButton @click="startEdit">Editar publicación</MainButton>
+        <MainButton @click="showDeleteModal = true"
+          >Eliminar publicación</MainButton
+        >
+      </div>
+      <div>
         <Comments :post_id="post_id" />
+      </div>
+    </div>
+  </div>
+  <div
+    v-if="showDeleteModal"
+    class="fixed inset-0 bg-gray-950 bg-opacity-25 flex items-center justify-center z-50"
+  >
+    <div class="bg-white p-6 rounded-xl shadow-lg max-w-md w-full text-center">
+      <p class="text-lg font-semibold mb-4">
+        ¿Estás seguro que querés eliminar esta publicación?
+      </p>
+      <div class="flex justify-center gap-4">
+        <MainButton @click="confirmDelete"> Sí, eliminar </MainButton>
+        <SecondaryButton @click="showDeleteModal = false">
+          Cancelar
+        </SecondaryButton>
       </div>
     </div>
   </div>

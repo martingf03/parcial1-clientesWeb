@@ -89,12 +89,12 @@ export default {
 
 <template>
   <div>
-    <span
-      class="text-emerald-700 text-sm underline hover:text-emerald-500 focus:text-emerald-500 cursor-pointer"
+    <p
+      class="text-emerald-700 text-sm underline hover:text-emerald-500 focus:text-emerald-500 cursor-pointer text-end"
       @click="toggleComments"
     >
       {{ showComments ? "Ocultar comentarios" : "Mostrar comentarios" }}
-    </span>
+    </p>
   </div>
   <div v-if="showComments" class="mt-3 border-t pt-2 space-y-2">
     <form @submit.prevent="submitComment" class="mt-4">

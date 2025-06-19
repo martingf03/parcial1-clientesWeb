@@ -8,7 +8,6 @@ import {
 import PostCard from "./PostCard.vue";
 import PostLoader from "../loaders/PostLoader.vue";
 
-
 let unsubscribe = () => {};
 
 export default {
@@ -28,9 +27,17 @@ export default {
     };
   },
 
-  async mounted() {
-    suscribeToPostsChannel(async (newPostReceived) => {
-      this.posts.push(newPostReceived);
+async mounted() {
+    suscribeToPostsChannel((post) => {
+      const index = this.posts.findIndex(p => p.id === post.id);
+
+      if (post.isDeleted) {
+        if (index !== -1) this.posts.splice(index, 1); 
+      } else if (index !== -1) {
+        this.posts[index] = post; 
+      } else {
+        this.posts.unshift(post); 
+      }
     });
 
     try {
@@ -38,7 +45,7 @@ export default {
       this.loadingPosts = false;
     } catch (error) {
       console.error(
-        "[loadPostsFromDB GeneralPostsSection] Error al traer las publicaciones  de la base de datos: ",
+        "[loadPostsFromDB GeneralPostsSection] Error al traer las publicaciones de la base de datos: ",
         error
       );
     }
@@ -71,7 +78,7 @@ export default {
         :content="post.content"
         :date="post.created_at"
         :post_id="post.id"
-        :post_user_id = "post.user_id"
+        :post_user_id="post.user_id"
         :auth_user_id="user.id"
       />
     </div>
