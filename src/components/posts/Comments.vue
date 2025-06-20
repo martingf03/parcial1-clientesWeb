@@ -88,7 +88,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="my-4">
     <p
       class="text-emerald-700 text-sm underline hover:text-emerald-500 focus:text-emerald-500 cursor-pointer text-end"
       @click="toggleComments"
@@ -96,10 +96,10 @@ export default {
       {{ showComments ? "Ocultar comentarios" : "Mostrar comentarios" }}
     </p>
   </div>
-  <div v-if="showComments" class="mt-3 border-t pt-2 space-y-2">
+  <div v-if="showComments" class="mt-2 pt-2 border-t border-t-gray-200">
     <form @submit.prevent="submitComment" class="mt-4">
       <label for="text" class="sr-only">Agregar comentario</label>
-      <div class="flex items-start space-x-2">
+      <div class="flex items-start space-x-2 mb-2">
         <textarea
           id="text"
           class="w-full border rounded py-2 px-3 h-12"

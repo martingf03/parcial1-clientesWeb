@@ -1,5 +1,4 @@
 <script>
-
 import {
   loadPostsByUser,
   suscribeToPostsChannel,
@@ -27,6 +26,18 @@ export default {
   },
 
   async mounted() {
+    suscribeToPostsChannel((post) => {
+      const index = this.posts.findIndex((p) => p.id === post.id);
+
+      if (post.isDeleted) {
+        if (index !== -1) this.posts.splice(index, 1);
+      } else if (index !== -1) {
+        this.posts[index] = post;
+      } else {
+        this.posts.unshift(post);
+      }
+    });
+
     unsubscribe = subscribeToUserState(async (newUserState) => {
       this.user = newUserState;
 
@@ -40,9 +51,6 @@ export default {
       }
     });
 
-    suscribeToPostsChannel((newPostReceived) => {
-      this.posts.push(newPostReceived);
-    });
   },
 
   async unmounted() {
@@ -55,7 +63,7 @@ export default {
   <section>
     <h2 class="sr-only">Lista de mis publicaciones</h2>
     <div
-    v-if="!loadingPosts"
+      v-if="!loadingPosts"
       ref="postsContainer"
       class="my-8 flex flex-col justify-center items-center gap-6"
     >
@@ -68,13 +76,11 @@ export default {
         :content="post.content"
         :date="post.created_at"
         :post_id="post.id"
-        :post_user_id = "post.user_id"
+        :post_user_id="post.user_id"
         :auth_user_id="user.id"
       />
     </div>
-    <div v-else
-    class="flex justify-center items-center mt-8"
-    >
+    <div v-else class="flex justify-center items-center mt-8">
       <PostLoader />
     </div>
   </section>

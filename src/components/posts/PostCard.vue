@@ -81,9 +81,9 @@ export default {
 
       <div
         v-if="auth_user_id === post_user_id"
-        class="flex justify-end gap-2 my-2"
+        class="flex justify-end gap-2 my-4"
       >
-        <MainButton @click="startEdit">Editar publicación</MainButton>
+        <MainButton @click="startEdit" v-if="!isEditing">Editar publicación</MainButton>
         <MainButton @click="showDeleteModal = true"
           >Eliminar publicación</MainButton
         >
@@ -95,17 +95,19 @@ export default {
   </div>
   <div
     v-if="showDeleteModal"
-    class="fixed inset-0 bg-gray-950 bg-opacity-25 flex items-center justify-center z-50"
+    class="fixed inset-0 bg-[#030712d3] flex items-center justify-center z-50"
   >
-    <div class="bg-white p-6 rounded-xl shadow-lg max-w-md w-full text-center">
-      <p class="text-lg font-semibold mb-4">
+    <div class="bg-white p-6 rounded-xl shadow-lg max-w-xl w-full text-center">
+      <p class="text-lg font-bold pb-4 border-b border-b-gray-200">
         ¿Estás seguro que querés eliminar esta publicación?
       </p>
-      <div class="flex justify-center gap-4">
-        <MainButton @click="confirmDelete"> Sí, eliminar </MainButton>
-        <SecondaryButton @click="showDeleteModal = false">
-          Cancelar
-        </SecondaryButton>
+      <font-awesome-icon :icon="['fas', 'triangle-exclamation']" class="mt-4 text-red-500 text-2xl"/> 
+      <p class="mt-1 mb-4 text-sm text-red-500">También se borrarán los comentarios que tenga esta publicación.</p>
+      <div class="flex justify-center gap-2">
+        <MainButton @click="confirmDelete">Eliminar</MainButton>
+        <SecondaryButton @click="showDeleteModal = false"
+          >Cancelar</SecondaryButton
+        >
       </div>
     </div>
   </div>
