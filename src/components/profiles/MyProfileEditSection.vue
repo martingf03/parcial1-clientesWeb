@@ -188,6 +188,7 @@ export default {
 
   unmounted() {
     unsubscribe();
+    () => this.avatar ? URL.revokeObjectURL(this.avatar) : "";
   },
 };
 </script>

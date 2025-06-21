@@ -1,4 +1,4 @@
-import { getFileURL, uploadFile } from "./storage";
+import { deleteFile, getFileURL, uploadFile } from "./storage";
 import supabase from "./supabase";
 import {
   createUserProfile,
@@ -214,11 +214,15 @@ export async function updateAuthPassword(newPassword) {
 
 export async function updateAuthUserAvatar(file) {
   try {
+    const oldProfilePhoto = user.photo;
     const filename = `${user.id}/${crypto.randomUUID()}.jpg`;
     await uploadFile(filename, file, "avatars");
     const photo = getFileURL(filename, "avatars");
     
-
+    if(oldProfilePhoto) {
+      const photoToDelete = oldProfilePhoto.slice(oldProfilePhoto.indexOf('/avatars/') + 9);
+      deleteFile(photoToDelete, "avatars");
+    }
     await updateAuthUserProfile({ photo: photo });
   } catch (error) {
     throw error;

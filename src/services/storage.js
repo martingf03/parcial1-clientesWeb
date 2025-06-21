@@ -13,6 +13,10 @@ export function getFileURL(filename, bucket) {
     return data.publicUrl;
 }
 
-// export async function deleteFile(filename, bucket) {
-    
-// }
+export async function deleteFile(filename, bucket) {
+    const { error } = await supabase.storage.from(bucket).remove([filename]);
+    if(error) {
+        console.error("[storage.js deleteFile] Error al eliminar el archivo", error);
+        throw error;
+    }
+}
