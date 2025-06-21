@@ -1,3 +1,4 @@
+import { getFileURL, uploadFile } from "./storage";
 import supabase from "./supabase";
 import {
   createUserProfile,
@@ -12,6 +13,7 @@ let user = {
   bio: null,
   career: null,
   surname: null,
+  photo: null,
 };
 
 let observers = [];
@@ -53,6 +55,7 @@ async function loadExtendedUserProfile(userId) {
       bio: profileData.bio,
       career: profileData.career,
       surname: profileData.surname,
+      photo: profileData.photo,
     });
   } catch (error) {
     console.error(
@@ -143,6 +146,7 @@ export async function logout() {
   updateUser({
     id: null,
     email: null,
+    photo: null,
   });
 
   console.info("Se cerró la sesión de", logueado);
@@ -206,6 +210,19 @@ export async function updateAuthPassword(newPassword) {
   }
 
   return data;
+}
+
+export async function updateAuthUserAvatar(file) {
+  try {
+    const filename = `${user.id}/${crypto.randomUUID()}.jpg`;
+    await uploadFile(filename, file, "avatars");
+    const photo = getFileURL(filename, "avatars");
+    
+
+    await updateAuthUserProfile({ photo: photo });
+  } catch (error) {
+    throw error;
+  }
 }
 
 
