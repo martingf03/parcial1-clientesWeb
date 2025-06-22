@@ -250,16 +250,9 @@ export default {
             />
           </div>
         </div>
-
         <p
           class="mt-2 text-center text-gray-500 italic font-light text-sm"
-          v-if="!avatar.objectURL && user.photo"
-        >
-          Foto actual
-        </p>
-        <p
-          class="mt-2 text-center text-gray-500 italic font-light text-sm"
-          v-if="!avatar.objectURL && !user.photo"
+          v-if="!avatar.objectURL && !user.photo || !avatar.objectURL && user.photo"
         >
           Foto actual
         </p>

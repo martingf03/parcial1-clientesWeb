@@ -23,7 +23,7 @@ loadInitialUserState();
 
 /**
  * Carga el estado inicial del usuario autenticado si existe sesión activa.
- * 
+ *
  * @async
  */
 async function loadInitialUserState() {
@@ -42,7 +42,7 @@ async function loadInitialUserState() {
 /**
  * Carga el perfil extendido del usuario desde la base de datos
  * y actualiza el estado del usuario.
- * 
+ *
  * @async
  * @param {string} userId - ID del usuario.
  * @throws {Error} Si ocurre un error al obtener los datos.
@@ -70,7 +70,7 @@ async function loadExtendedUserProfile(userId) {
 /**
  * Registra un nuevo usuario con email y contraseña.
  * Si el registro es exitoso, lo guarda en la BBDD.
- * 
+ *
  * @async
  * @param {string} email - Correo electrónico del nuevo usuario.
  * @param {string} password - Contraseña del nuevo usuario.
@@ -107,7 +107,7 @@ export async function register(email, password) {
 /**
  * Inicia sesión con email y contraseña.
  * Si es exitoso, actualiza el estado del usuario.
- * 
+ *
  * @param {string} email - Correo electrónico del usuario.
  * @param {string} password - Contraseña del usuario.
  * @returns {Object} Usuario autenticado.
@@ -138,7 +138,7 @@ export async function login(email, password) {
 /**
  * Cierra la sesión del usuario actualmente autenticado.
  * Limpia los datos del usuario del estado global.
- * 
+ *
  * @async
  */
 export async function logout() {
@@ -157,7 +157,7 @@ export async function logout() {
 
 /**
  * Actualiza el perfil del usuario autenticado en la base de datos.
- * 
+ *
  * @async
  * @param {{ display_name?: string, bio?: string, career?: string, surname?: string }} data - Datos del perfil a actualizar.
  */
@@ -175,7 +175,7 @@ export async function updateAuthUserProfile(data) {
 
 /**
  * Actualiza el email del usuario autenticado.
- * 
+ *
  * @async
  * @param {{ email: string }} newEmail - Nuevo correo electrónico.
  * @returns {Object} Datos actualizados del usuario.
@@ -194,16 +194,16 @@ export async function updateAuthEmail(newEmail) {
 
 /**
  * Actualiza la contraseña del usuario autenticado.
- * 
+ *
  * @async
  * @param {string} newPassword - Nueva contraseña.
  * @returns {Object} Datos actualizados del usuario.
  * @throws {Error} Si falla la operación.
  */
 export async function updateAuthPassword(newPassword) {
- const { data, error } = await supabase.auth.updateUser({
-  password: newPassword
-})
+  const { data, error } = await supabase.auth.updateUser({
+    password: newPassword,
+  });
 
   if (error) {
     console.error("Error actualizando contraseña:", error);
@@ -216,12 +216,16 @@ export async function updateAuthPassword(newPassword) {
 export async function updateAuthUserAvatar(file) {
   try {
     const oldProfilePhoto = user.photo;
-    const filename = `${user.id}/${crypto.randomUUID()}.${getExtensionFromFile(file)}`;
+    const filename = `${user.id}/${crypto.randomUUID()}.${getExtensionFromFile(
+      file
+    )}`;
     await uploadFile(filename, file, "avatars");
     const photo = getFileURL(filename, "avatars");
-    
-    if(oldProfilePhoto) {
-      const photoToDelete = oldProfilePhoto.slice(oldProfilePhoto.indexOf('/avatars/') + 9);
+
+    if (oldProfilePhoto) {
+      const photoToDelete = oldProfilePhoto.slice(
+        oldProfilePhoto.indexOf("/avatars/") + 9
+      );
       deleteFile(photoToDelete, "avatars");
     }
     await updateAuthUserProfile({ photo: photo });
@@ -230,6 +234,15 @@ export async function updateAuthUserAvatar(file) {
   }
 }
 
+export async function uploadAuthUserPostPhoto(file, post_id) {
+  try {
+    const filename = `${user.id}/${post_id}.${getExtensionFromFile(file)}`;
+    await uploadFile(filename, file, "posts.images");
+    return getFileURL(filename, "posts.images")
+  } catch (error) {
+    throw error;
+  }
+}
 
 /*
 OBESERVER
@@ -238,7 +251,7 @@ OBESERVER
 /**
  * Suscribe una función "observer" que se ejecutará cada vez que cambien los datos del usuario.
  * Devuelve una función para cancelar la suscripción.
- * 
+ *
  * @param {({ id: string|null, email: string|null }) => void} callback - Función que recibe el nuevo estado del usuario.
  * @returns {() => void} Función para desuscribirse.
  */
@@ -252,8 +265,8 @@ export function subscribeToUserState(callback) {
 
 /**
  * Ejecuta un observer específico pasándole el estado actual del usuario.
- * 
- * @param {({ id: string|null, email: string|null }) => void} callback 
+ *
+ * @param {({ id: string|null, email: string|null }) => void} callback
  */
 function notify(callback) {
   callback({ ...user });
@@ -268,8 +281,8 @@ function notifyAll() {
 
 /**
  * Actualiza los datos del usuario en el estado local y notifica a los observers.
- * 
- * @param {{ id?: string|null, email?: string|null, display_name?: string|null, bio?: string|null, career?: string|null, surname?: string|null }} data 
+ *
+ * @param {{ id?: string|null, email?: string|null, display_name?: string|null, bio?: string|null, career?: string|null, surname?: string|null }} data
  */
 function updateUser(data) {
   user = {

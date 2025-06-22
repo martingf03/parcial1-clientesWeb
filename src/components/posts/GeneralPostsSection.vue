@@ -29,7 +29,7 @@ export default {
 
 async mounted() {
     suscribeToPostsChannel((post) => {
-      const index = this.posts.findIndex(p => p.id === post.id);
+      const index = this.posts.findIndex((p) => p.id === post.id);
 
       if (post.isDeleted) {
         if (index !== -1) this.posts.splice(index, 1); 
@@ -75,6 +75,7 @@ async mounted() {
         :user_id="post.user_id"
         :display_name="post.user_profiles.display_name"
         :surname="post.user_profiles.surname"
+        :file_url="post.file_url"
         :content="post.content"
         :date="post.created_at"
         :post_id="post.id"

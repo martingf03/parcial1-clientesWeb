@@ -1,4 +1,5 @@
 import supabase from "./supabase";
+import { deleteFile } from "./storage";
 
 /**
  * Guarda una nueva publicación en la base de datos.
@@ -9,7 +10,9 @@ import supabase from "./supabase";
  */
 export async function savePost(data) {
   const { error } = await supabase.from("posts").insert({
+    id: data.id,
     user_id: data.user_id,
+    file_url: data.file_url,
     content: data.content,
   });
   if (error) {
@@ -88,6 +91,7 @@ export async function loadPostsFromDB() {
     .select(
       `
       id,
+      file_url,
       content,
       created_at,
       user_id,
@@ -159,12 +163,23 @@ export async function editPost(post_id, content) {
 }
 
 /**
- * Elimina una publicación por su ID.
+ * Elimina una publicación y su imagen asociada en Supabase Storage.
+ *
  * @async
+ * @function deletePost
  * @param {string} post_id - ID de la publicación a eliminar.
- * @throws {Error} Si ocurre un error al eliminar la publicación.
+ * @param {string} file_url - URL pública del archivo en Supabase Storage.
+ * @throws {Error} Si ocurre un error al eliminar la imagen o la publicación.
  */
-export async function deletePost(post_id) {
+export async function deletePost(post_id, file_url) {
+  try {
+    const filePath = file_url.slice(file_url.indexOf("/posts.images/") + 14);
+    deleteFile(filePath, "posts.images");
+  } catch (error) {
+    console.error("[posts-service.js deletePost] Error al eliminar la imagen de storage:", error);
+    throw error;
+  }
+
   const { error } = await supabase.from("posts").delete().eq("id", post_id);
 
   if (error) {

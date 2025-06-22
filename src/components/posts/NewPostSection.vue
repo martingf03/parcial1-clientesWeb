@@ -1,7 +1,10 @@
 <script>
 import MainButton from "../MainButton.vue";
 import ButtonLoader from "../loaders/ButtonLoader.vue";
-import { subscribeToUserState } from "../../services/auth";
+import {
+  subscribeToUserState,
+  uploadAuthUserPostPhoto,
+} from "../../services/auth";
 import { savePost } from "../../services/posts-service";
 import SuccessNote from "../notifications/SuccessNote.vue";
 import ErrorNote from "../notifications/ErrorNote.vue";
@@ -21,7 +24,11 @@ export default {
         id: null,
       },
       newPost: {
+        id: "",
+        file: null,
+        file_url: "",
         content: "",
+        objectURL: "",
       },
       notification: {
         type: "success",
@@ -32,24 +39,61 @@ export default {
 
   methods: {
     async publishPost() {
-      let newPostContent = this.newPost.content;
+      const newPostContent = this.newPost.content?.trim();
 
-      if (newPostContent) {
-        await savePost({
-          user_id: this.user.id,
-          content: newPostContent,
-        }),
-          (this.newPost.content = "");
-        this.notification = {
-          type: "success",
-          message: "La publicación fue creada con éxito.",
-        };
-      } else {
+      if (!newPostContent) {
         this.notification = {
           type: "error",
           message: "La publicación no puede estar vacía.",
         };
+        return;
       }
+
+      try {
+        this.newPost.id = crypto.randomUUID();
+
+        if (this.newPost.file) {
+          const fileURL = await uploadAuthUserPostPhoto(
+            this.newPost.file,
+            this.newPost.id
+          );
+          this.newPost.file_url = fileURL;
+        }
+
+        await savePost({
+          id: this.newPost.id,
+          user_id: this.user.id,
+          file_url: this.newPost.file_url,
+          content: newPostContent,
+        });
+
+        this.notification = {
+          type: "success",
+          message: "La publicación fue creada con éxito.",
+        };
+
+        this.newPost = {
+          id: "",
+          file: null,
+          file_url: "",
+          content: "",
+          objectURL: "",
+        };
+      } catch (error) {
+        console.error("Error al crear la publicación:", error);
+        this.notification = {
+          type: "error",
+          message: "Hubo un problema al crear la publicación.",
+        };
+      }
+    },
+
+    async handlePostFileImage(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      this.newPost.file = file;
+      this.newPost.objectURL = URL.createObjectURL(file);
     },
   },
 
@@ -61,6 +105,7 @@ export default {
 
   async unmounted() {
     unsubscribe();
+    () => (this.newPost ? URL.revokeObjectURL(this.newPost) : "");
   },
 };
 </script>
@@ -77,6 +122,36 @@ export default {
         </div>
       </template>
       <div class="mb-4">
+        <div>
+          <p class="mb-2 font-bold">Subir imagen de publicación</p>
+          <label
+            for="post_image"
+            class="block mb-2 text-emerald-700 underline hover:text-emerald-500 focus:text-emerald-500 cursor-pointer"
+            >Seleccionar imagen</label
+          >
+          <input
+            type="file"
+            id="post_image"
+            class="sr-only"
+            @change="handlePostFileImage"
+          />
+          <div class="flex">
+            <div class="w-60">
+              <img
+                :src="newPost.objectURL"
+                alt="Imagen de perfil actual"
+                class="block rounded border shadow-md shadow-gray-400 h-full object-cover aspect-square"
+                v-if="newPost.objectURL"
+              />
+            </div>
+          </div>
+          <p
+            class="mt-2 mb-4 text-gray-500 italic font-light text-sm"
+            v-if="newPost.objectURL"
+          >
+            Previsualización de imagen de la publicación
+          </p>
+        </div>
         <label for="content" class="sr-only">Nueva publicación</label>
         <textarea
           type="content"

@@ -73,6 +73,7 @@ export default {
         :user_id="user.id"
         :display_name="user.display_name"
         :surname="user.surname"
+        :file_url="post.file_url"
         :content="post.content"
         :date="post.created_at"
         :post_id="post.id"
