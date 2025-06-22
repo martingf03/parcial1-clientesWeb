@@ -23,7 +23,7 @@ export default {
 
 <template>
   <AppNavbar />
-  <main class="container mx-auto p-4 font-[Lexend]">
+  <main class="mx-auto px-32 py-6 font-[Lexend] bg-white shadow-md">
     <router-view />
   </main>
   <AppFooter />

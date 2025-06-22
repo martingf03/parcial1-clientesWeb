@@ -4,10 +4,11 @@ import PostLoader from "../loaders/PostLoader.vue";
 import ProfileLoader from "../loaders/ProfileLoader.vue";
 import PostCard from "../posts/PostCard.vue";
 import { loadPostsByUser } from "../../services/posts-service";
+import UserProfileData from "./UserProfileData.vue";
 
 export default {
   name: "UserProfileSection",
-  components: { ProfileLoader, PostCard, PostLoader },
+  components: { ProfileLoader, PostCard, PostLoader, UserProfileData },
   emits: ["user-loaded"],
 
   data() {
@@ -28,7 +29,7 @@ export default {
   },
 
   watch: {
-    '$route.params.id': {
+    "$route.params.id": {
       immediate: true,
       handler(newId) {
         this.loadUserData(newId);
@@ -58,44 +59,11 @@ export default {
     },
   },
 };
-
 </script>
 
 <template>
-  <section class="p-16 rounded shadow" v-if="!loading">
-    <div class="flex mb-8 gap-8">
-      <div v-if="user.photo" class="h-auto aspect-square">
-        <img
-          :src="user.photo"
-          alt="Foto de perfil"
-          class="block rounded border shadow-md shadow-gray-400 h-full object-cover"
-        />
-      </div>
-      <div class="flex flex-col p-8 shadow rounded bg-emerald-50">
-        <h2 class="font-bold text-2xl mb-2">Biografía</h2>
-        <p class="italic font-light text-emerald-800 ms-8">
-          {{ user.bio || "Aún no se escribió la biografía..." }}
-        </p>
-      </div>
-    </div>
-    <div class="flex gap-40 items-center">
-      <div>
-        <h2 class="font-bold text-2xl mb-2">Email</h2>
-        <p>{{ user.email }}</p>
-      </div>
-      <div>
-        <h2 class="font-bold text-2xl mb-2">Nombre</h2>
-        <p>{{ user.display_name || "No especificado" }}</p>
-      </div>
-      <div>
-        <h2 class="font-bold text-2xl mb-2">Apellido</h2>
-        <p>{{ user.surname || "No especificado" }}</p>
-      </div>
-      <div>
-        <h2 class="font-bold text-2xl mb-2">Carrera</h2>
-        <p>{{ user.career || "No especificado" }}</p>
-      </div>
-    </div>
+  <section class="p-3" v-if="!loading">
+    <UserProfileData :user="user" />
   </section>
   <div
     v-else
@@ -105,7 +73,7 @@ export default {
   </div>
 
   <section class="flex flex-col justify-center items-center mt-8">
-    <p class="ftext-center mb-2 mt-8">
+    <p class="text-center mb-2 mt-8">
       <span class="font-bold">{{ user.display_name }}</span> realizó las
       siguientes publicaciones:
     </p>

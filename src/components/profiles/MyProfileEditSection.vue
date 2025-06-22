@@ -10,6 +10,7 @@ import MainButton from "../MainButton.vue";
 import ButtonLoader from "../loaders/ButtonLoader.vue";
 import SuccessNote from "../notifications/SuccessNote.vue";
 import ErrorNote from "../notifications/ErrorNote.vue";
+import { randomProfilePhotoGenerator } from "../libraries/helpers";
 
 let unsubscribe = () => {};
 
@@ -174,6 +175,15 @@ export default {
     },
   },
 
+    computed: {
+    generateProfilePhotoURL() {
+      return randomProfilePhotoGenerator(
+        this.user.display_name,
+        this.user.surname
+      );
+    },
+  },
+
   mounted() {
     unsubscribe = subscribeToUserState((newUserState) => {
       this.user = newUserState;
@@ -232,12 +242,24 @@ export default {
               class="block rounded border shadow-md shadow-gray-400 h-full object-cover aspect-square"
               v-if="avatar.objectURL"
             />
+            <img
+              :src="generateProfilePhotoURL"
+              alt="Imagen de perfil actual"
+              class="block rounded border shadow-md shadow-gray-400 h-full object-cover aspect-square"
+              v-if="!avatar.objectURL && !user.photo"
+            />
           </div>
         </div>
 
         <p
           class="mt-2 text-center text-gray-500 italic font-light text-sm"
           v-if="!avatar.objectURL && user.photo"
+        >
+          Foto actual
+        </p>
+        <p
+          class="mt-2 text-center text-gray-500 italic font-light text-sm"
+          v-if="!avatar.objectURL && !user.photo"
         >
           Foto actual
         </p>

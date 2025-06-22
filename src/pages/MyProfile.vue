@@ -9,7 +9,7 @@ export default {
 </script>
 
 <template>
-    <div class="flex flex-col justify-start mb-4">
+    <div class="flex flex-col items-center mt-4">
         <MainH1>Mi perfil</MainH1>
         <router-link 
         to="/editar-mi-perfil" 

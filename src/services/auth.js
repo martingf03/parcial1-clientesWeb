@@ -5,6 +5,7 @@ import {
   getUserProfileById,
   updateUserProfile,
 } from "./user-profiles";
+import { getExtensionFromFile } from "../components/libraries/helpers";
 
 let user = {
   id: null,
@@ -215,7 +216,7 @@ export async function updateAuthPassword(newPassword) {
 export async function updateAuthUserAvatar(file) {
   try {
     const oldProfilePhoto = user.photo;
-    const filename = `${user.id}/${crypto.randomUUID()}.jpg`;
+    const filename = `${user.id}/${crypto.randomUUID()}.${getExtensionFromFile(file)}`;
     await uploadFile(filename, file, "avatars");
     const photo = getFileURL(filename, "avatars");
     
