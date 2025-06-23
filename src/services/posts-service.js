@@ -9,7 +9,9 @@ import { deleteFile } from "./storage";
  * @throws {Error} Si ocurre un error al insertar la publicación.
  */
 export async function savePost(data) {
-  const { error } = await supabase.from("posts").insert({
+  const { error } = await supabase
+  .from("posts")
+  .insert({
     id: data.id,
     user_id: data.user_id,
     file_url: data.file_url,
@@ -180,7 +182,10 @@ export async function deletePost(post_id, file_url) {
     throw error;
   }
 
-  const { error } = await supabase.from("posts").delete().eq("id", post_id);
+  const { error } = await supabase
+  .from("posts")
+  .delete()
+  .eq("id", post_id);
 
   if (error) {
     console.error(

@@ -54,10 +54,15 @@ export default {
 </script>
 
 <template>
-  <div class="w-xl rounded overflow-hidden shadow-lg bg-white border">
-    <div>
+  <div class="w-xl rounded overflow-hidden shadow-lg shadow-gray-400 bg-white border">
       <div>
-        <img :src="file_url" alt="Imagen de publicación" class="block w-full" />
+        <div class="w-full h-96 overflow-hidden">
+          <img
+            :src="file_url"
+            alt="Imagen de publicación"
+            class="w-full h-full object-cover object-center"
+          />
+        </div>
         <div v-if="isEditing" class="px-6 py-4">
           <textarea
             v-model="editedContent"
@@ -70,12 +75,12 @@ export default {
             <MainButton @click="saveEdit">Editar</MainButton>
           </div>
         </div>
-        <div v-else class="px-6 py-4">
+        <div v-else class="px-6 pt-4">
           <p class="text-gray-900 text-base mb-4">
             {{ content }}
           </p>
         </div>
-        <div class="px-6 py-4">
+        <div class="px-6 pb-4">
           <div class="text-sm text-gray-500 mb-1">
             Publicado por
             <span
@@ -103,7 +108,6 @@ export default {
         </div>
       </div>
     </div>
-  </div>
   <div
     v-if="showDeleteModal"
     class="fixed inset-0 bg-[#030712d3] flex items-center justify-center z-50"

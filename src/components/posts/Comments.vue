@@ -7,6 +7,7 @@ import {
 import { subscribeToUserState } from "../../services/auth";
 import { formatDate } from "../../services/chat-service";
 
+
 let unsubscribe = () => {};
 
 export default {
@@ -83,6 +84,7 @@ export default {
       }
     },
     formatDate,
+
   },
 };
 </script>
@@ -120,19 +122,28 @@ export default {
     <div
       v-for="comment in comments"
       :key="comment.id"
-      class="text-sm text-gray-700 border-b border-b-gray-200 p-4"
+      class="text-sm text-gray-700 border-b border-b-gray-200 p-4 flex items-center justify-start gap-4"
     >
-      <p
-        @click="$router.push(`/usuario/${comment.user_id}`)"
-        class="font-bold text-emerald-600 cursor-pointer hover:text-emerald-500 transition"
-      >
-        {{ comment.user_profiles.display_name }}
-        {{ comment.user_profiles.surname }}
-      </p>
-      <p class="mb-1">{{ comment.content }}</p>
-      <p class="text-xs text-gray-500">
-        Publicado {{ formatDate(comment.created_at) }}
-      </p>
+      <div class="w-[10%]">
+        <img
+          :src="comment.user_profiles.photo"
+          alt="Avatar de usuario"
+          class="rounded"
+        />
+      </div>
+      <div>
+        <p
+          @click="$router.push(`/usuario/${comment.user_id}`)"
+          class="font-bold text-emerald-600 cursor-pointer hover:text-emerald-500 transition"
+        >
+          {{ comment.user_profiles.display_name }}
+          {{ comment.user_profiles.surname }}
+        </p>
+        <p class="mb-1">{{ comment.content }}</p>
+        <p class="text-xs text-gray-500">
+          Publicado {{ formatDate(comment.created_at) }}
+        </p>
+      </div>
     </div>
 
     <div v-if="comments.length === 0" class="text-gray-400 text-sm my-4">

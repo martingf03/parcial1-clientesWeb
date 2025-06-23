@@ -6,6 +6,7 @@ import {
   updateUserProfile,
 } from "./user-profiles";
 import { getExtensionFromFile } from "../components/libraries/helpers";
+import { randomProfilePhotoGenerator } from "../components/libraries/helpers";
 
 let user = {
   id: null,
@@ -76,7 +77,7 @@ async function loadExtendedUserProfile(userId) {
  * @param {string} password - Contraseña del nuevo usuario.
  * @throws {Error} Si ocurre un error en el registro o al crear el perfil.
  */
-export async function register(email, password) {
+export async function register(email, password, name, surname) {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -86,11 +87,14 @@ export async function register(email, password) {
     console.error("[auth.js register] Error al crear la cuenta: ", error);
     throw error;
   }
-
+  const firstPhoto = randomProfilePhotoGenerator(name, surname);
   try {
-    await createUserProfile({
+      await createUserProfile({
       id: data.user.id,
       email,
+      display_name: name,
+      surname: surname,
+      photo: firstPhoto,
     });
   } catch (errorProfile) {
     throw errorProfile;
@@ -99,6 +103,9 @@ export async function register(email, password) {
   updateUser({
     id: data.user.id,
     email: data.user.email,
+    display_name: name,
+    surname: surname,
+    photo: firstPhoto,
   });
 
   console.info("Se registró un nuevo usuario con e-mail", data.user.email);
@@ -147,6 +154,10 @@ export async function logout() {
   updateUser({
     id: null,
     email: null,
+    bio: null,
+    display_name: null,
+    surname: null,
+    career: null,
     photo: null,
   });
 

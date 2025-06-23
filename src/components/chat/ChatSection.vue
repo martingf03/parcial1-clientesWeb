@@ -85,8 +85,8 @@ export default {
 </script>
 
 <template>
-  <div class="flex gap-4">
-    <section class="w-9/12">
+  <div class="flex flex-col items-center gap-4 w-3/4">
+    <section class="w-full">
       <h2 class="sr-only">Lista de mensajes</h2>
       <div ref="chatContainer" class="h-100 overflow-y-auto p-4 border rounded">
         <div
@@ -113,7 +113,7 @@ export default {
       </div>
     </section>
 
-    <section class="w-3/12">
+    <section class="w-full">
       <h2 class="sr-only">Enviar un mensaje</h2>
       <form action="#" @submit.prevent="SendMessage">
         <div class="mb-4">
@@ -127,7 +127,9 @@ export default {
           >
           </textarea>
         </div>
-        <MainButton type="submit" class="w-full">Enviar</MainButton>
+        <div class="flex justify-center">
+          <MainButton type="submit" class="w-1/4">Enviar</MainButton>
+        </div>
       </form>
     </section>
   </div>

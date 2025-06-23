@@ -6,13 +6,14 @@ export default {
   name: "Chat",
   components: {
     MainH1,
-    ChatSection
-  }
-}
+    ChatSection,
+  },
+};
 </script>
 
 <template>
-  <MainH1>Chat global</MainH1>
-
-  <ChatSection />
+  <div class="flex flex-col items-center gep-4">
+    <MainH1>Chat global</MainH1>
+    <ChatSection />
+  </div>
 </template>

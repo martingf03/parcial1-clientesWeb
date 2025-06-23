@@ -41,7 +41,8 @@ export async function loadCommentByPost(post_id) {
       created_at,
       user_profiles (
         display_name,
-        surname
+        surname,
+        photo
       )
     `
     )
@@ -102,7 +103,7 @@ export async function suscribeToCommentsChannel(post_id, callback) {
 async function addUserDataToComment(comment) {
   const { data, error } = await supabase
     .from("user_profiles")
-    .select("display_name, surname")
+    .select("display_name, surname, photo")
     .eq("id", comment.user_id)
     .single();
 

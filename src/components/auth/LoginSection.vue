@@ -48,7 +48,7 @@ export default {
 </script>
 
 <template>
-  <div class="w-2xl p-6 shadow rounded">
+  <div class="w-xl p-6 shadow rounded">
     <form action="#" @submit.prevent="handleSubmit">
       <div class="mb-4 flex flex-col">
         <label for="email">E-mail</label>

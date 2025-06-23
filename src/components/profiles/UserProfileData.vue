@@ -1,5 +1,4 @@
 <script>
-import { randomProfilePhotoGenerator } from "../libraries/helpers";
 
 export default {
   name: "UserProfileCard",
@@ -9,22 +8,14 @@ export default {
       required: true,
     },
   },
-  computed: {
-    generateProfilePhotoURL() {
-      return randomProfilePhotoGenerator(
-        this.user.display_name,
-        this.user.surname
-      );
-    },
-  },
 };
 </script>
 
 <template>
-    <div class="flex mb-8 gap-8 w-full">
+    <div class="flex justify-center mb-8 gap-8 w-full">
       <div v-if="user.photo || user.display_name" class="w-72 h-72 min-w-72 min-h-72 overflow-hidden">
         <img
-          :src="user.photo ? user.photo : generateProfilePhotoURL"
+          :src="user.photo"
           alt="Foto de perfil"
           class="w-full h-full object-cover rounded border shadow-md shadow-gray-400"
         />
@@ -37,7 +28,7 @@ export default {
       </div>
     </div>
 
-    <div class="flex gap-40 items-center">
+    <div class="flex gap-40 justify-center">
       <div>
         <h2 class="font-bold text-2xl mb-2">Email</h2>
         <p>{{ user.email }}</p>

@@ -88,9 +88,12 @@ export default {
         :user_id="user.id"
         :display_name="user.display_name"
         :surname="user.surname"
+        :file_url="post.file_url"
         :content="post.content"
         :date="post.created_at"
         :post_id="post.id"
+        :post_user_id="post.user_id"
+        :auth_user_id="user.id"
       />
     </div>
     <div v-else class="flex justify-center items-center mt-8">

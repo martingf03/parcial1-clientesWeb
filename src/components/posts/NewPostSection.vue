@@ -28,7 +28,7 @@ export default {
         file: null,
         file_url: "",
         content: "",
-        objectURL: "",
+        objectURL: null,
       },
       notification: {
         type: "success",
@@ -77,7 +77,7 @@ export default {
           file: null,
           file_url: "",
           content: "",
-          objectURL: "",
+          objectURL: null,
         };
       } catch (error) {
         console.error("Error al crear la publicación:", error);
@@ -123,10 +123,11 @@ export default {
       </template>
       <div class="mb-4">
         <div>
-          <p class="mb-2 font-bold">Subir imagen de publicación</p>
+          <p class="font-bold">Subir imagen de publicación</p>
+          <p class="text-sm text-gray-500 italic mb-2">Tamaño máx: 2MB</p>
           <label
             for="post_image"
-            class="block mb-2 text-emerald-700 underline hover:text-emerald-500 focus:text-emerald-500 cursor-pointer"
+            class="block mb-4 text-emerald-700 underline hover:text-emerald-500 focus:text-emerald-500 cursor-pointer"
             >Seleccionar imagen</label
           >
           <input
@@ -135,16 +136,16 @@ export default {
             class="sr-only"
             @change="handlePostFileImage"
           />
-          <div class="flex">
-            <div class="w-60">
+          <div class="w-96 mb-6" v-if="newPost.objectURL">
+            <div class="w-full h-60 overflow-hidden shadow-md shadow-gray-400 rounded">
               <img
                 :src="newPost.objectURL"
                 alt="Imagen de perfil actual"
-                class="block rounded border shadow-md shadow-gray-400 h-full object-cover aspect-square"
-                v-if="newPost.objectURL"
+                class="w-full h-full object-cover object-center"
               />
             </div>
           </div>
+
           <p
             class="mt-2 mb-4 text-gray-500 italic font-light text-sm"
             v-if="newPost.objectURL"

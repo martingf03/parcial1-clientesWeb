@@ -12,6 +12,8 @@ export default {
       user: {
         email: "",
         password: "",
+        display_name: "",
+        surname: "",
       },
       loading: false,
 
@@ -25,7 +27,7 @@ export default {
     async handleSubmit() {
       try {
         this.loading = true;
-        await register(this.user.email, this.user.password);
+        await register(this.user.email, this.user.password, this.user.display_name, this.user.surname);
         this.loading = false;
         this.$router.push("/iniciar-sesion");
       } catch (error) {
@@ -54,8 +56,28 @@ export default {
 </script>
 
 <template>
-  <div class="w-2xl p-6 shadow rounded">
+  <div class="w-xl p-6 shadow rounded">
     <form action="#" @submit.prevent="handleSubmit">
+      <div class="mb-4 flex flex-col">
+        <label for="name">Nombre</label>
+        <input
+          type="text"
+          name="name"
+          id="name"
+          class="mb-2 p-2 border-gray-300 border-2 rounded h-8"
+          v-model="user.display_name"
+        />
+      </div>
+      <div class="mb-4 flex flex-col">
+        <label for="email">Apellido</label>
+        <input
+          type="text"
+          name="surname"
+          id="surname"
+          class="mb-2 p-2 border-gray-300 border-2 rounded h-8"
+          v-model="user.surname"
+        />
+      </div>
       <div class="mb-4 flex flex-col">
         <label for="email">E-mail</label>
         <input
