@@ -11,7 +11,6 @@ import ButtonLoader from "../loaders/ButtonLoader.vue";
 import SuccessNote from "../notifications/SuccessNote.vue";
 import ErrorNote from "../notifications/ErrorNote.vue";
 
-
 let unsubscribe = () => {};
 
 export default {
@@ -140,6 +139,20 @@ export default {
       const file = event.target.files[0];
       if (!file) return;
 
+      const maxSizeMB = 1;
+      const maxSizeBytes = maxSizeMB * 1024 * 1024;
+
+      if (file.size > maxSizeBytes) {
+        this.avatar.file = null;
+        this.avatar.objectURL = null;
+
+        this.notification = {
+          type: "error",
+          message: `La imagen supera el tamaño máximo permitido de ${maxSizeMB}MB.`,
+        };
+        return;
+      }
+
       this.avatar.file = file;
       this.avatar.objectURL = URL.createObjectURL(file);
     },
@@ -175,7 +188,6 @@ export default {
     },
   },
 
-
   mounted() {
     unsubscribe = subscribeToUserState((newUserState) => {
       this.user = newUserState;
@@ -190,7 +202,7 @@ export default {
 
   unmounted() {
     unsubscribe();
-    () => this.avatar ? URL.revokeObjectURL(this.avatar) : "";
+    () => (this.avatar ? URL.revokeObjectURL(this.avatar) : "");
   },
 };
 </script>
@@ -209,6 +221,7 @@ export default {
     <div class="flex items-end gap-4 mb-8">
       <div>
         <p class="mb-2 font-bold">Cambiar foto de perfil</p>
+        <p class="text-sm text-gray-500 italic mb-2">Tamaño máx: 1MB</p>
         <label
           for="avatar"
           class="block mb-2 text-emerald-700 underline hover:text-emerald-500 focus:text-emerald-500 cursor-pointer"

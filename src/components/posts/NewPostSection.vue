@@ -92,6 +92,20 @@ export default {
       const file = event.target.files[0];
       if (!file) return;
 
+      const maxSizeMB = 2;
+      const maxSizeBytes = maxSizeMB * 1024 * 1024;
+
+      if (file.size > maxSizeBytes) {
+        this.newPost.file = null;
+        this.newPost.objectURL = null;
+
+        this.notification = {
+          type: "error",
+          message: `La imagen supera el tamaño máximo permitido de ${maxSizeMB}MB.`,
+        };
+        return;
+      }
+
       this.newPost.file = file;
       this.newPost.objectURL = URL.createObjectURL(file);
     },
@@ -137,7 +151,9 @@ export default {
             @change="handlePostFileImage"
           />
           <div class="w-96 mb-6" v-if="newPost.objectURL">
-            <div class="w-full h-60 overflow-hidden shadow-md shadow-gray-400 rounded">
+            <div
+              class="w-full h-60 overflow-hidden shadow-md shadow-gray-400 rounded"
+            >
               <img
                 :src="newPost.objectURL"
                 alt="Imagen de perfil actual"
