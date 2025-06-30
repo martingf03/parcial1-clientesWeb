@@ -8,7 +8,6 @@ import {
 import PostCard from "./PostCard.vue";
 import PostLoader from "../loaders/PostLoader.vue";
 
-
 let unsubscribe = () => {};
 
 export default {
@@ -28,16 +27,16 @@ export default {
     };
   },
 
-async mounted() {
+  async mounted() {
     suscribeToPostsChannel((post) => {
       const index = this.posts.findIndex((p) => p.id === post.id);
 
       if (post.isDeleted) {
-        if (index !== -1) this.posts.splice(index, 1); 
+        if (index !== -1) this.posts.splice(index, 1);
       } else if (index !== -1) {
-        this.posts[index] = post; 
+        this.posts[index] = post;
       } else {
-        this.posts.unshift(post); 
+        this.posts.unshift(post);
       }
     });
 
@@ -88,8 +87,21 @@ async mounted() {
       <PostLoader />
     </div>
   </section>
-  <section v-else class="mx-auto text-xl font-bold my-16">
-    <p class="text-center">¡Conectate para ver quienes están publicando!</p>
-    <p class="text-center mt-5 text-sm font-normal">¿Sos parte? Ingresá <router-link to="/iniciar-sesion" class="text-emerald-600 font-bold hover:underline hover:text-emerald-400">por acá</router-link> y descubrí nuevas publicaciones.</p>
+  <section v-else class="mx-auto text-xl font-bold mb-8">
+    <p class="text-center mt-4 mb-8">¡Conectate para ver quienes están publicando!</p>
+    <img
+      src="/img/home_img.jpg"
+      alt="Logo de Link Campus"
+      class="block w-3/4 mb-8 mx-auto rounded-md shadow-md shadow-gray-300"
+    />
+    <p class="text-center mt-5 text-sm font-normal">
+      ¿Sos parte? Ingresá
+      <router-link
+        to="/iniciar-sesion"
+        class="text-emerald-600 font-bold hover:underline hover:text-emerald-400"
+        >por acá</router-link
+      >
+      y descubrí nuevas publicaciones.
+    </p>
   </section>
 </template>

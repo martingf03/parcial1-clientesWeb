@@ -8,8 +8,8 @@ import GeneralPostsSection from '../components/posts/GeneralPostsSection.vue';
 </script>
 
 <template>
-    <section class="flex flex-col justify-center items-center my-4 border-b-4 border-emerald-500 pb-8 w-4xl mx-auto">
-        <img src="/logo.svg" alt="Logo de Link Campus" class="block w-32 mb-4">
+    <section class="flex flex-col justify-center items-center mb-4 border-b-4 border-emerald-500 pb-8 w-4xl mx-auto">
+        <img src="/img/home_logo.png" alt="Logo de Link Campus" class="block w-32 mt-4 mb-8">
         <MainH1>Bienvenidos a Link Campus</MainH1>
         <p class="text-center w-3xl">Acá podés postear lo que te gusta, ver qué comparten los demás y comentar en tiempo real. Conectá, expresate y hacé que tu voz se escuche.</p>
     </section>
