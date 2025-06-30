@@ -46,7 +46,7 @@ export default {
           this.user.surname
         );
         this.loading = false;
-        this.$router.push("/iniciar-sesion");
+        this.$router.push("/");
       } catch (error) {
         this.loading = false;
         console.error(error);

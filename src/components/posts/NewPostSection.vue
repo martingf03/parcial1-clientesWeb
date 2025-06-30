@@ -39,10 +39,12 @@ export default {
     async publishPost() {
       const newPostContent = this.newPost.content?.trim();
 
-      if (!newPostContent) {
+      if (!newPostContent || !this.newPost.file) {
         this.notification = {
           type: "error",
-          message: "La publicación no puede estar vacía.",
+          message: !newPostContent
+            ? "La publicación no puede estar vacía."
+            : "Debe seleccionar una imagen para publicar.",
         };
         return;
       }
