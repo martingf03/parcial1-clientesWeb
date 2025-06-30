@@ -23,7 +23,7 @@ export default {
         :icon="
           type === 'success' ? ['fas', 'circle-check'] : ['fas', 'triangle-exclamation']
         "
-        class="me-2"
+        class="mr-2"
       />
       <slot />
     </div>

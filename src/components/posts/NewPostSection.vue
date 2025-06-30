@@ -47,6 +47,8 @@ export default {
         return;
       }
 
+      this.updating = true;
+
       try {
         this.newPost.id = crypto.randomUUID();
 
@@ -83,12 +85,18 @@ export default {
           type: "error",
           message: "Hubo un problema al crear la publicación.",
         };
+      } finally {
+        this.updating = false;
       }
     },
 
     async handlePostFileImage(event) {
       const file = event.target.files[0];
       if (!file) return;
+
+      if (this.newPost.objectURL) {
+        URL.revokeObjectURL(this.newPost.objectURL);
+      }
 
       this.newPost.file = file;
       this.newPost.objectURL = URL.createObjectURL(file);
@@ -103,7 +111,9 @@ export default {
 
   async unmounted() {
     unsubscribe();
-    () => (this.newPost ? URL.revokeObjectURL(this.newPost) : "");
+    if (this.newPost.objectURL) {
+      URL.revokeObjectURL(this.newPost.objectURL);
+    }
   },
 };
 </script>

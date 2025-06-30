@@ -45,6 +45,7 @@ export async function saveChatMessage(data) {
 /**
  * Suscribe una función callback que se ejecuta cada vez que se inserta un nuevo mensaje en la tabla "global_chat".
  * 
+ * @async
  * @param {(message: Object) => void} callback - Función que se ejecuta al recibir un nuevo mensaje.
  */
 export async function suscribeToChatMessages(callback) {

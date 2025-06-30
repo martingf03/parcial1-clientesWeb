@@ -5,7 +5,7 @@ import { deleteFile } from "./storage";
  * Guarda una nueva publicación en la base de datos.
  *
  * @async
- * @param {{ user_id: string, content: string }} postData - Datos de la publicación.
+ * @param {{ id: string, user_id: string, content: string, file_url?: string }} data - Datos de la publicación.
  * @throws {Error} Si ocurre un error al insertar la publicación.
  */
 export async function savePost(data) {
@@ -26,6 +26,14 @@ export async function savePost(data) {
   }
 }
 
+/**
+ * Se suscribe a los cambios en la tabla "posts" en tiempo real (insert, update, delete).
+ * Cuando se elimina un post, ejecuta el callback con `isDeleted: true`.
+ * Cuando se agrega o actualiza, obtiene los datos del perfil de usuario y los incluye.
+ *
+ * @async
+ * @param {(post: Object) => void} callback - Función que se ejecuta al recibir un nuevo cambio en la tabla de publicaciones.
+ */
 export async function suscribeToPostsChannel(callback) {
   const postsChannel = supabase.channel("posts", {
     config: {

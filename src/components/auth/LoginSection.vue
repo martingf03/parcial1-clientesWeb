@@ -24,14 +24,19 @@ export default {
 
   methods: {
     async handleSubmit() {
+      if (!this.user.email.trim() || !this.user.password.trim()) {
+        this.notification = {
+          type: "error",
+          message: "Los campos no pueden estar vacíos.",
+        };
+        return;
+      }
+      this.loading = true;
       try {
-        this.loading = true;
         await login(this.user.email, this.user.password);
         this.loading = false;
         this.$router.push("/");
       } catch (error) {
-        this.loading = false;
-
         const errorMsg = error.message.toLowerCase();
         this.notification.type = "error";
         if (errorMsg.includes("invalid login credentials")) {
@@ -41,6 +46,8 @@ export default {
         } else {
           this.notification.message = "Ocurrió un error al iniciar sesión.";
         }
+      } finally {
+        this.loading = false;
       }
     },
   },
@@ -57,6 +64,7 @@ export default {
           name="email"
           id="email"
           class="mb-2 p-2 border-gray-300 border-2 rounded h-8"
+          required
           v-model="user.email"
         />
       </div>
@@ -68,12 +76,12 @@ export default {
           name="password"
           id="password"
           class="mb-2 p-2 border-gray-300 border-2 rounded h-8"
+          required
           v-model="user.password"
         />
       </div>
-      
-      <template v-if="notification.message">
 
+      <template v-if="notification.message">
         <NotificationNote
           :type="notification.type"
           @close="notification.message = null"
@@ -91,6 +99,13 @@ export default {
         Iniciar sesión
       </MainButton>
     </form>
-    <p class="text-center mt-5 mb-2 text-sm font-normal">¿Aún no tenés un usuario? Registrate <router-link to="/registro" class="text-emerald-600 font-bold hover:underline hover:text-emerald-400">acá</router-link>.</p>
+    <p class="text-center mt-5 mb-2 text-sm font-normal">
+      ¿Aún no tenés un usuario? Registrate
+      <router-link
+        to="/registro"
+        class="text-emerald-600 font-bold hover:underline hover:text-emerald-400"
+        >acá</router-link
+      >.
+    </p>
   </div>
 </template>

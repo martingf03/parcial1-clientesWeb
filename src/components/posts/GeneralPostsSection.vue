@@ -42,12 +42,13 @@ export default {
 
     try {
       this.posts = await loadPostsFromDB();
-      this.loadingPosts = false;
     } catch (error) {
       console.error(
         "[loadPostsFromDB GeneralPostsSection] Error al traer las publicaciones de la base de datos: ",
         error
       );
+    } finally {
+      this.loadingPosts = false;
     }
 
     unsubscribe = subscribeToUserState(
@@ -64,8 +65,11 @@ export default {
 <template>
   <section v-if="user.id" class="flex gap-4">
     <h2 class="sr-only">Lista general de publicaciones</h2>
+    <div v-if="loadingPosts" class="flex justify-center items-center mx-auto mt-8">
+      <PostLoader />
+    </div>
     <div
-      v-if="!loadingPosts"
+      v-else
       ref="postsContainer"
       class="my-8 mx-auto flex flex-col justify-center items-center gap-6"
     >
@@ -83,16 +87,15 @@ export default {
         :auth_user_id="user.id"
       />
     </div>
-    <div v-else class="flex justify-center items-center mx-auto mt-8">
-      <PostLoader />
-    </div>
   </section>
   <section v-else class="mx-auto text-xl font-bold mb-8">
-    <p class="text-center mt-4 mb-8">¡Conectate para ver quienes están publicando!</p>
+    <p class="text-center mt-4 mb-8">
+      ¡Conectate para ver quienes están publicando!
+    </p>
     <img
       src="/img/home_img.jpg"
       alt="Logo de Link Campus"
-      class="block w-3/4 mb-8 mx-auto rounded-md shadow-md shadow-gray-300"
+      class="block w-3/5 mb-8 mx-auto rounded-md shadow-md shadow-gray-300"
     />
     <p class="text-center mt-5 text-sm font-normal">
       ¿Sos parte? Ingresá

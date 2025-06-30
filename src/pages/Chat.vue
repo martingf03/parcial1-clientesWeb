@@ -12,7 +12,7 @@ export default {
 </script>
 
 <template>
-  <div class="flex flex-col items-center gep-4">
+  <div class="flex flex-col items-center gap-4">
     <MainH1>Chat global</MainH1>
     <ChatSection />
   </div>

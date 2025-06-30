@@ -26,10 +26,10 @@ export default {
         photo: null,
       },
       profile: {
-        display_name: null,
-        bio: null,
-        career: null,
-        surname: null,
+        display_name: "",
+        bio: "",
+        career: "",
+        surname: "",
       },
       updating: false,
 
@@ -71,8 +71,6 @@ export default {
           type: "success",
           message: "El perfil se actualizó con éxito.",
         };
-
-        this.updating = false;
       } catch (error) {
         this.notification = {
           type: "error",
@@ -82,6 +80,8 @@ export default {
           "No se pudo actualizar el perfil debido al siguiente error: ",
           error
         );
+      } finally {
+        this.updating = false;
       }
     },
 
@@ -108,14 +108,16 @@ export default {
           message:
             "Se envió un email a tu casilla anterior para confirmar la actualización de tu nuevo email.",
         };
+        this.authEmail = "";
       } catch (error) {
         console.error("Error actualizando el email:", error);
         this.notification = {
           type: "error",
           message: "No se pudo actualizar el email.",
         };
+      } finally {
+        this.authUpdatingEmail = false;
       }
-      this.authUpdatingEmail = false;
     },
 
     async handleAuthPassword() {
@@ -130,6 +132,7 @@ export default {
         };
         return;
       }
+
       try {
         this.authUpdatingPassword = true;
 
@@ -139,14 +142,16 @@ export default {
           type: "success",
           message: "Se actualizó tu contraseña.",
         };
+        this.authPassword = "";
       } catch (error) {
         console.error("Error actualizando la contraseña:", error);
         this.notification = {
           type: "error",
           message: "No se pudo actualizar la contraseña.",
         };
+      } finally {
+        this.authUpdatingPassword = false;
       }
-      this.authUpdatingPassword = false;
     },
 
     /**
@@ -155,6 +160,10 @@ export default {
     async handleFileChange(event) {
       const file = event.target.files[0];
       if (!file) return;
+
+      if (this.avatar.objectURL) {
+        URL.revokeObjectURL(this.avatar.objectURL);
+      }
 
       this.avatar.file = file;
       this.avatar.objectURL = URL.createObjectURL(file);
@@ -201,7 +210,9 @@ export default {
 
   unmounted() {
     unsubscribe();
-    () => (this.avatar ? URL.revokeObjectURL(this.avatar) : "");
+    if (this.avatar.objectURL) {
+      URL.revokeObjectURL(this.avatar.objectURL);
+    }
   },
 };
 </script>

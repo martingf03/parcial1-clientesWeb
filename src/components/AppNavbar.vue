@@ -17,8 +17,8 @@ export default {
   },
 
   methods: {
-    handleLogout() {
-      logout()
+    async handleLogout() {
+      await logout()
       this.$router.push("/iniciar-sesion");
     }
   },

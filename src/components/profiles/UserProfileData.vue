@@ -22,13 +22,13 @@ export default {
       </div>
       <div class="flex flex-col p-8 shadow rounded bg-emerald-50 w-200 h-72 overflow-auto justify-start">
         <h2 class="font-bold text-2xl mb-2">Biografía</h2>
-        <p class="italic font-light text-emerald-800 ms-8">
+        <p class="italic font-light text-emerald-800">
           {{ user.bio || "Aún no se escribió la biografía..." }}
         </p>
       </div>
     </div>
 
-    <div class="flex gap-40 justify-center">
+    <div class="flex gap-4 justify-center">
       <div>
         <h2 class="font-bold text-2xl mb-2">Email</h2>
         <p>{{ user.email }}</p>

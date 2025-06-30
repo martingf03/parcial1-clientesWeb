@@ -44,13 +44,13 @@ export default {
       if (this.user.id) {
         try {
           this.posts = await loadPostsByUser(this.user.id);
-          this.loadingPosts = false;
         } catch (error) {
           console.error("Error cargando publicaciones del usuario", error);
+        } finally {
+          this.loadingPosts = false;
         }
       }
     });
-
   },
 
   async unmounted() {
@@ -62,8 +62,13 @@ export default {
 <template>
   <section>
     <h2 class="sr-only">Lista de mis publicaciones</h2>
+
+    <div v-if="loadingPosts" class="flex justify-center items-center mt-8">
+      <PostLoader />
+    </div>
+
     <div
-      v-if="!loadingPosts"
+      v-else-if="posts.length > 0"
       ref="postsContainer"
       class="my-8 flex flex-col justify-center items-center gap-6"
     >
@@ -81,8 +86,9 @@ export default {
         :auth_user_id="user.id"
       />
     </div>
-    <div v-else class="flex justify-center items-center mt-8">
-      <PostLoader />
+
+    <div v-else>
+      <p class="text-center my-8">Aún no realizaste ninguna publicación.</p>
     </div>
   </section>
 </template>

@@ -25,6 +25,18 @@ export default {
 
   methods: {
     async handleSubmit() {
+      const { email, password } = this.user;
+
+      if (
+        !email.trim() ||
+        !password.trim() 
+      ) {
+        this.notification = {
+          type: "error",
+          message: "Se debe proporcionar un email y una contraseña para registrarse.",
+        };
+        return;
+      }
       try {
         this.loading = true;
         await register(
@@ -41,7 +53,7 @@ export default {
 
         const errorMsg = error.message.toLowerCase();
 
-        this.notification.type = 'error';
+        this.notification.type = "error";
 
         if (errorMsg.includes("anonymous sign-ins")) {
           this.notification.message = "Los campos no pueden estar vacíos.";
@@ -76,7 +88,7 @@ export default {
         />
       </div>
       <div class="mb-4 flex flex-col">
-        <label for="email">Apellido</label>
+        <label for="surname">Apellido</label>
         <input
           type="text"
           name="surname"
@@ -85,24 +97,27 @@ export default {
           v-model="user.surname"
         />
       </div>
+      <p class=" my-4 text-sm text-center">Los siguientes campos son obligatorios.</p>
       <div class="mb-4 flex flex-col">
-        <label for="email">E-mail</label>
+        <label for="email">E-mail <span class="font-bold text-red-600">*</span></label>
         <input
           type="email"
           name="email"
           id="email"
           class="mb-2 p-2 border-gray-300 border-2 rounded h-8"
+          required
           v-model="user.email"
         />
       </div>
 
       <div class="mb-4 flex flex-col">
-        <label for="password">Contraseña</label>
+        <label for="password">Contraseña <span class="font-bold text-red-600">*</span></label>
         <input
           type="password"
           name="password"
           id="password"
           class="mb-2 p-2 border-gray-300 border-2 rounded h-8"
+          required
           v-model="user.password"
         />
       </div>

@@ -224,6 +224,14 @@ export async function updateAuthPassword(newPassword) {
   return data;
 }
 
+/**
+ * Actualiza la foto de perfil del usuario autenticado.
+ * Sube una nueva imagen al bucket 'avatars' y elimina la anterior si existía.
+ *
+ * @async
+ * @param {File} file - Archivo de imagen a subir.
+ * @throws {Error} Si ocurre un error al subir o actualizar la foto.
+ */
 export async function updateAuthUserAvatar(file) {
   try {
     const oldProfilePhoto = user.photo;
@@ -245,6 +253,16 @@ export async function updateAuthUserAvatar(file) {
   }
 }
 
+/**
+ * Sube una imagen asociada a una publicación del usuario autenticado.
+ * Devuelve la URL pública del archivo subido.
+ *
+ * @async
+ * @param {File} file - Archivo de imagen de la publicación.
+ * @param {string} post_id - ID de la publicación asociada.
+ * @returns {string} URL pública del archivo subido.
+ * @throws {Error} Si falla la carga del archivo.
+ */
 export async function uploadAuthUserPostPhoto(file, post_id) {
   try {
     const filename = `${user.id}/${post_id}.${getExtensionFromFile(file)}`;
