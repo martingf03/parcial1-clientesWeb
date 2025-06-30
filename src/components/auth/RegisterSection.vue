@@ -1,11 +1,11 @@
 <script>
 import { register } from "../../services/auth";
 import MainButton from "../MainButton.vue";
-import ErrorNote from "../notifications/ErrorNote.vue";
+import NotificationNote from "../NotificationNote.vue";
 
 export default {
   name: "Register",
-  components: { MainButton, ErrorNote },
+  components: { MainButton, NotificationNote },
   data() {
     return {
       user: {
@@ -17,6 +17,7 @@ export default {
       loading: false,
 
       notification: {
+        type: "",
         message: null,
       },
     };
@@ -39,6 +40,8 @@ export default {
         console.error(error);
 
         const errorMsg = error.message.toLowerCase();
+
+        this.notification.type = 'error';
 
         if (errorMsg.includes("anonymous sign-ins")) {
           this.notification.message = "Los campos no pueden estar vacíos.";
@@ -104,12 +107,17 @@ export default {
         />
       </div>
       <template v-if="notification.message">
-        <ErrorNote class="mx-auto">{{ notification.message }}</ErrorNote>
+        <NotificationNote
+          :type="notification.type"
+          @close="notification.message = null"
+        >
+          {{ notification.message }}
+        </NotificationNote>
       </template>
-      <MainButton 
+      <MainButton
         :loading="loading"
-        :loadingText="'Registrando'"  
-        :type="'submit'" 
+        :loadingText="'Registrando'"
+        :type="'submit'"
         class="w-full"
       >
         Crear cuenta

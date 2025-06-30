@@ -5,15 +5,14 @@ import {
   uploadAuthUserPostPhoto,
 } from "../../services/auth";
 import { savePost } from "../../services/posts-service";
-import SuccessNote from "../notifications/SuccessNote.vue";
-import ErrorNote from "../notifications/ErrorNote.vue";
+import NotificationNote from "../NotificationNote.vue";
 
 let unsubscribe = () => {};
 
 export default {
   name: "NewPostSection",
 
-  components: { MainButton, SuccessNote, ErrorNote },
+  components: { MainButton, NotificationNote },
 
   data() {
     return {
@@ -30,7 +29,7 @@ export default {
         objectURL: null,
       },
       notification: {
-        type: "success",
+        type: "",
         message: null,
       },
     };
@@ -113,12 +112,13 @@ export default {
   <section class="p-3">
     <form action="#" @submit.prevent="publishPost">
       <template v-if="notification.message != null" class="transition">
-        <div v-if="notification.type === 'success'">
-          <SuccessNote>{{ notification.message }}</SuccessNote>
-        </div>
-        <div v-else>
-          <ErrorNote>{{ notification.message }}</ErrorNote>
-        </div>
+        <NotificationNote
+          :type="notification.type"
+          @close="notification.message = null"
+          class="w-1/2"
+        >
+          {{ notification.message }}
+        </NotificationNote>
       </template>
       <div class="mb-4">
         <div>
@@ -136,7 +136,9 @@ export default {
             @change="handlePostFileImage"
           />
           <div class="w-96 mb-6" v-if="newPost.objectURL">
-            <div class="w-full h-60 overflow-hidden shadow-md shadow-gray-400 rounded">
+            <div
+              class="w-full h-60 overflow-hidden shadow-md shadow-gray-400 rounded"
+            >
               <img
                 :src="newPost.objectURL"
                 alt="Imagen de perfil actual"
@@ -162,9 +164,9 @@ export default {
         >
         </textarea>
       </div>
-      <MainButton 
+      <MainButton
         :loading="updating"
-        :type="'submit'" 
+        :type="'submit'"
         :loadingText="'Publicando'"
         class="mt-4"
       >

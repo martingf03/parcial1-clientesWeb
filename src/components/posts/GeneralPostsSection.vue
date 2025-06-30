@@ -8,6 +8,7 @@ import {
 import PostCard from "./PostCard.vue";
 import PostLoader from "../loaders/PostLoader.vue";
 
+
 let unsubscribe = () => {};
 
 export default {
@@ -88,6 +89,7 @@ async mounted() {
     </div>
   </section>
   <section v-else class="mx-auto text-xl font-bold my-16">
-    <p>¡Conectate para ver quienes están publicando!</p>
+    <p class="text-center">¡Conectate para ver quienes están publicando!</p>
+    <p class="text-center mt-5 text-sm font-normal">¿Sos parte? Ingresá <router-link to="/iniciar-sesion" class="text-emerald-600 font-bold hover:underline hover:text-emerald-400">por acá</router-link> y descubrí nuevas publicaciones.</p>
   </section>
 </template>

@@ -1,11 +1,11 @@
 <script>
 import { login } from "../../services/auth";
 import MainButton from "../MainButton.vue";
-import ErrorNote from "../notifications/ErrorNote.vue";
+import NotificationNote from "../NotificationNote.vue";
 
 export default {
   name: "LoginSection",
-  components: { MainButton, ErrorNote },
+  components: { MainButton, NotificationNote },
   data() {
     return {
       user: {
@@ -16,6 +16,7 @@ export default {
       loading: false,
 
       notification: {
+        type: "",
         message: null,
       },
     };
@@ -32,7 +33,7 @@ export default {
         this.loading = false;
 
         const errorMsg = error.message.toLowerCase();
-
+        this.notification.type = "error";
         if (errorMsg.includes("invalid login credentials")) {
           this.notification.message = "Email o contraseña incorrectos.";
         } else if (errorMsg.includes("missing email or phone")) {
@@ -70,18 +71,26 @@ export default {
           v-model="user.password"
         />
       </div>
+      
       <template v-if="notification.message">
-        <ErrorNote class="mx-auto">{{ notification.message }}</ErrorNote>
+
+        <NotificationNote
+          :type="notification.type"
+          @close="notification.message = null"
+        >
+          {{ notification.message }}
+        </NotificationNote>
       </template>
 
-      <MainButton 
+      <MainButton
         :loading="loading"
-        :loadingText="'Iniciando'" 
+        :loadingText="'Iniciando'"
         :type="'submit'"
         class="w-full"
-        >
-          Iniciar sesión
+      >
+        Iniciar sesión
       </MainButton>
     </form>
+    <p class="text-center mt-5 mb-2 text-sm font-normal">¿Aún no tenés un usuario? Registrate <router-link to="/registro" class="text-emerald-600 font-bold hover:underline hover:text-emerald-400">acá</router-link>.</p>
   </div>
 </template>

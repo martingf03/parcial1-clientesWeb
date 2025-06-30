@@ -7,14 +7,13 @@ import {
   updateAuthUserAvatar,
 } from "../../services/auth";
 import MainButton from "../MainButton.vue";
-import SuccessNote from "../notifications/SuccessNote.vue";
-import ErrorNote from "../notifications/ErrorNote.vue";
+import NotificationNote from "../NotificationNote.vue";
 
 let unsubscribe = () => {};
 
 export default {
   name: "MyProfileEditSection",
-  components: { MainButton, SuccessNote, ErrorNote },
+  components: { MainButton, NotificationNote },
   data() {
     return {
       user: {
@@ -35,7 +34,7 @@ export default {
       updating: false,
 
       notification: {
-        type: "success",
+        type: "",
         message: null,
       },
 
@@ -89,10 +88,20 @@ export default {
     async handleAuthEmail() {
       this.notification.message = null;
 
+      const emailTrimmed = this.authEmail.trim();
+
+      if (!emailTrimmed) {
+        this.notification = {
+          type: "error",
+          message: "Para actualizar, el campo de email no puede estar vacío.",
+        };
+        return;
+      }
+
       try {
         this.authUpdatingEmail = true;
 
-        await updateAuthEmail(this.authEmail);
+        await updateAuthEmail(emailTrimmed);
 
         this.notification = {
           type: "success",
@@ -112,10 +121,19 @@ export default {
     async handleAuthPassword() {
       this.notification.message = null;
 
+      const passwordTrimmed = this.authPassword.trim();
+      if (!passwordTrimmed) {
+        this.notification = {
+          type: "error",
+          message:
+            "Para actualizar, el campo de contraseña no puede estar vacío.",
+        };
+        return;
+      }
       try {
         this.authUpdatingPassword = true;
 
-        await updateAuthPassword(this.authPassword);
+        await updateAuthPassword(passwordTrimmed);
 
         this.notification = {
           type: "success",
@@ -146,30 +164,26 @@ export default {
      * Función que controla el submit de la nueva imagen subida.
      */
     async handleUploadImage() {
-      try {
-        if (!this.avatar.file) return;
-        if (this.avatarUpdating) return;
+      if (!this.avatar.file) return;
+      if (this.avatarUpdating) return;
 
-        try {
-          this.avatarUpdating = true;
-          await updateAuthUserAvatar(this.avatar.file);
-        } catch (error) {
-          // TODO...
-        }
+      try {
+        this.avatarUpdating = true;
+
+        await updateAuthUserAvatar(this.avatar.file);
 
         this.notification = {
           type: "success",
           message: "La imagen ha sido actualizada con éxito.",
         };
-
-        this.avatarUpdating = false;
       } catch (error) {
         console.error("Error al subir la imagen de perfil.", error);
         this.notification = {
           type: "error",
-          message: "No se puedo cambiar la imagen de perfil.",
+          message: "No se pudo cambiar la imagen de perfil.",
         };
       }
+      this.avatarUpdating = false;
     },
   },
 
@@ -194,12 +208,13 @@ export default {
 
 <template>
   <template v-if="notification.message != null">
-    <div v-if="notification.type === 'success'">
-      <SuccessNote>{{ notification.message }}</SuccessNote>
-    </div>
-    <div v-else>
-      <ErrorNote>{{ notification.message }}</ErrorNote>
-    </div>
+    <NotificationNote
+      :type="notification.type"
+      @close="notification.message = null"
+      class="w-1/2"
+    >
+      {{ notification.message }}
+    </NotificationNote>
   </template>
 
   <section class="p-3">
@@ -247,10 +262,10 @@ export default {
         </p>
       </div>
       <div class="flex items-end" v-if="avatar.objectURL">
-        <MainButton 
-        :loading="avatarUpdating"
-        :loadingText="'Subiendo imagen'"
-        @click="handleUploadImage"
+        <MainButton
+          :loading="avatarUpdating"
+          :loadingText="'Subiendo imagen'"
+          @click="handleUploadImage"
         >
           Guardar imagen
         </MainButton>
