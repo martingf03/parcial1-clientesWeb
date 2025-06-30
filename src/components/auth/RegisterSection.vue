@@ -1,12 +1,11 @@
 <script>
 import { register } from "../../services/auth";
-import ButtonLoader from "../loaders/ButtonLoader.vue";
 import MainButton from "../MainButton.vue";
 import ErrorNote from "../notifications/ErrorNote.vue";
 
 export default {
   name: "Register",
-  components: { MainButton, ButtonLoader, ErrorNote },
+  components: { MainButton, ErrorNote },
   data() {
     return {
       user: {
@@ -27,7 +26,12 @@ export default {
     async handleSubmit() {
       try {
         this.loading = true;
-        await register(this.user.email, this.user.password, this.user.display_name, this.user.surname);
+        await register(
+          this.user.email,
+          this.user.password,
+          this.user.display_name,
+          this.user.surname
+        );
         this.loading = false;
         this.$router.push("/iniciar-sesion");
       } catch (error) {
@@ -102,16 +106,14 @@ export default {
       <template v-if="notification.message">
         <ErrorNote class="mx-auto">{{ notification.message }}</ErrorNote>
       </template>
-      <div v-if="!loading">
-        <MainButton type="submit" class="w-full">Crear cuenta</MainButton>
-      </div>
-      <div v-else>
-        <button
-          class="py-2 px-4 rounded bg-gray-200 text-gray-400 text-center w-full"
-        >
-          Registrando <ButtonLoader />
-        </button>
-      </div>
+      <MainButton 
+        :loading="loading"
+        :loadingText="'Registrando'"  
+        :type="'submit'" 
+        class="w-full"
+      >
+        Crear cuenta
+      </MainButton>
     </form>
   </div>
 </template>

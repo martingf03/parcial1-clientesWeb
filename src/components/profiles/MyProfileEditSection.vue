@@ -7,16 +7,14 @@ import {
   updateAuthUserAvatar,
 } from "../../services/auth";
 import MainButton from "../MainButton.vue";
-import ButtonLoader from "../loaders/ButtonLoader.vue";
 import SuccessNote from "../notifications/SuccessNote.vue";
 import ErrorNote from "../notifications/ErrorNote.vue";
-
 
 let unsubscribe = () => {};
 
 export default {
   name: "MyProfileEditSection",
-  components: { MainButton, ButtonLoader, SuccessNote, ErrorNote },
+  components: { MainButton, SuccessNote, ErrorNote },
   data() {
     return {
       user: {
@@ -175,7 +173,6 @@ export default {
     },
   },
 
-
   mounted() {
     unsubscribe = subscribeToUserState((newUserState) => {
       this.user = newUserState;
@@ -190,7 +187,7 @@ export default {
 
   unmounted() {
     unsubscribe();
-    () => this.avatar ? URL.revokeObjectURL(this.avatar) : "";
+    () => (this.avatar ? URL.revokeObjectURL(this.avatar) : "");
   },
 };
 </script>
@@ -250,14 +247,13 @@ export default {
         </p>
       </div>
       <div class="flex items-end" v-if="avatar.objectURL">
-        <div v-if="!updating">
-          <MainButton @click="handleUploadImage">Guardar imagen</MainButton>
-        </div>
-        <div v-else>
-          <button class="mt-4 py-2 px-4 rounded bg-gray-200 text-gray-400">
-            Subiendo <ButtonLoader />
-          </button>
-        </div>
+        <MainButton 
+        :loading="avatarUpdating"
+        :loadingText="'Subiendo imagen'"
+        @click="handleUploadImage"
+        >
+          Guardar imagen
+        </MainButton>
       </div>
     </div>
 
@@ -300,14 +296,13 @@ export default {
           />
         </div>
       </div>
-      <div v-if="!updating">
-        <MainButton type="submit" class="mt-4">Guardar cambios</MainButton>
-      </div>
-      <div v-else>
-        <button class="mt-4 py-2 px-4 rounded bg-gray-200 text-gray-400">
-          Cargando <ButtonLoader />
-        </button>
-      </div>
+      <MainButton
+        :loading="updating"
+        :type="'submit'"
+        :loadingText="'Guardando'"
+      >
+        Guardar cambios
+      </MainButton>
     </form>
   </section>
   <section class="p-3">
@@ -322,14 +317,13 @@ export default {
           v-model="authEmail"
           placeholder="Tu nuevo email"
         />
-        <div v-if="!authUpdatingEmail">
-          <MainButton type="submit">Actualizar Email</MainButton>
-        </div>
-        <div v-else>
-          <button class="py-2 px-4 rounded bg-gray-200 text-gray-400">
-            Cargando <ButtonLoader />
-          </button>
-        </div>
+        <MainButton
+          :loading="authUpdatingEmail"
+          :type="'submit'"
+          :loadingText="'Actualizando'"
+        >
+          Actualizar email
+        </MainButton>
       </form>
       <form action="#" @submit.prevent="handleAuthPassword" class="w-xl">
         <label for="new_password" class="block mb-2 font-bold"
@@ -342,14 +336,13 @@ export default {
           v-model="authPassword"
           placeholder="Tu nueva contraseña"
         />
-        <div v-if="!authUpdatingPassword">
-          <MainButton type="submit">Actualizar contraseña</MainButton>
-        </div>
-        <div v-else>
-          <button class="py-2 px-4 rounded bg-gray-200 text-gray-400">
-            Cargando <ButtonLoader />
-          </button>
-        </div>
+        <MainButton
+          :loading="authUpdatingPassword"
+          :type="'submit'"
+          :loadingText="'Actualizando'"
+        >
+          Actualizar contraseña
+        </MainButton>
       </form>
     </div>
   </section>

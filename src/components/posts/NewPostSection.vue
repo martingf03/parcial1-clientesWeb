@@ -1,6 +1,5 @@
 <script>
 import MainButton from "../MainButton.vue";
-import ButtonLoader from "../loaders/ButtonLoader.vue";
 import {
   subscribeToUserState,
   uploadAuthUserPostPhoto,
@@ -14,7 +13,7 @@ let unsubscribe = () => {};
 export default {
   name: "NewPostSection",
 
-  components: { MainButton, ButtonLoader, SuccessNote, ErrorNote },
+  components: { MainButton, SuccessNote, ErrorNote },
 
   data() {
     return {
@@ -163,14 +162,14 @@ export default {
         >
         </textarea>
       </div>
-      <div v-if="!updating">
-        <MainButton type="submit" class="mt-4">Publicar</MainButton>
-      </div>
-      <div v-else>
-        <button class="mt-4 py-2 px-4 rounded bg-gray-200 text-gray-400">
-          Publicando <ButtonLoader />
-        </button>
-      </div>
+      <MainButton 
+        :loading="updating"
+        :type="'submit'" 
+        :loadingText="'Publicando'"
+        class="mt-4"
+      >
+        Publicar
+      </MainButton>
     </form>
   </section>
 </template>

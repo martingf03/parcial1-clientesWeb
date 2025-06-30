@@ -1,12 +1,11 @@
 <script>
 import { login } from "../../services/auth";
-import ButtonLoader from "../loaders/ButtonLoader.vue";
 import MainButton from "../MainButton.vue";
 import ErrorNote from "../notifications/ErrorNote.vue";
 
 export default {
   name: "LoginSection",
-  components: { MainButton, ButtonLoader, ErrorNote },
+  components: { MainButton, ErrorNote },
   data() {
     return {
       user: {
@@ -74,16 +73,15 @@ export default {
       <template v-if="notification.message">
         <ErrorNote class="mx-auto">{{ notification.message }}</ErrorNote>
       </template>
-      <div v-if="!loading">
-        <MainButton type="submit" class="w-full">Iniciar sesión</MainButton>
-      </div>
-      <div v-else>
-        <button
-          class="py-2 px-4 rounded bg-gray-200 text-gray-400 text-center w-full"
+
+      <MainButton 
+        :loading="loading"
+        :loadingText="'Iniciando'" 
+        :type="'submit'"
+        class="w-full"
         >
-          Iniciando <ButtonLoader />
-        </button>
-      </div>
+          Iniciar sesión
+      </MainButton>
     </form>
   </div>
 </template>
